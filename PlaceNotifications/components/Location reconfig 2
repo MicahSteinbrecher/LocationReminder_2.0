@@ -1,0 +1,32 @@
+Location reconfig 2 
+
+-copied package json (with older version of react native)
+-copied components, utilities, schemas, pushcontroller, and app.js
+-ran npm install
+
+2019-10-29 16:32:41.055 [fatal][tid:main] Unable to resolve module `react-native-maps` from `App.js`: react-native-maps could not be found within the project.
+
+https://github.com/react-native-community/react-native-maps/blob/master/docs/installation.md
+
+pod install caused
+[!] No podspec found for `react-native-google-maps` in `../node_modules/react-native-maps`
+
+npm install react-native-maps --save-exact
+pod install
+
+error: bundling failed: Error: Unable to resolve module `react-native-elements` from `App.js`: react-native-elements could not be found within the project.
+
+forgot to copy package.json - copied and ran npm install
+
+TypeError: Cannot read property 'debugHosts' of undefined
+
+react-native link realm
+
+TypeError: Cannot read property 'arrayOf' of undefined Slideshow.js
+
+https://github.com/haqiqiw/react-native-slideshow/issues/4#issuecomment-349066802
+(add import to node_modules/react-native-slideshow/Slideshow.js)
+
+[error][tid:com.facebook.react.JavaScript] Invariant Violation: Native module cannot be null.
+react-native-link
+same error

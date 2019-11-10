@@ -72,8 +72,8 @@ export default class MainDisplay extends React.Component {
                         initialRegion={{
                             latitude: this.props.marker.coordinate.latitude,
                             longitude: this.props.marker.coordinate.longitude,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
+                            latitudeDelta: .461,
+                            longitudeDelta: .2105
                         }}
                         showsUserLocation={true}
                         followsUserLocation={true}
@@ -92,9 +92,11 @@ export default class MainDisplay extends React.Component {
                 initialRegion={{
                     latitude: this.props.location.latitude,
                     longitude: this.props.location.longitude,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
+                    latitudeDelta: 0.461,
+                    longitudeDelta: .2105
+                    ,
                 }}
+
                 showsUserLocation={true}
                 followsUserLocation={true}
                 showsMyLocationButton={true}
@@ -103,7 +105,15 @@ export default class MainDisplay extends React.Component {
                 // )}
                 onMapReady={() => this.handleMapReady()}
 
-            />
+            >
+                {this.props.suggestions.map(suggestion => (
+                    <Marker
+                        coordinate={suggestion.latlng}
+                        pinColor='#3F84E6'
+                    />
+                ))}
+
+            </MapView>
         );
     }
 

@@ -13,6 +13,7 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { SearchBar, ListItem, List } from 'react-native-elements'
 import Home from './components/home'
 import Places from './components/placesSettings'
+import Settings from './components/settings'
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 
@@ -67,7 +68,8 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 const TabNavigator = createBottomTabNavigator(
     {
         Home:  Home ,
-        Places: Places
+        Places: Places,
+        Settings: Settings,
     },
     {
         tabBarOptions: {

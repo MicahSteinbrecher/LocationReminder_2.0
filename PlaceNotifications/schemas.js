@@ -11,3 +11,11 @@ export const PlaceSchema = {
     }
 }
 
+export const EstablishmentSchema = {
+    name: 'Establishment',
+    properties: {
+        type: 'string',
+        isPreferred: 'bool'
+    }
+}
+

@@ -6,14 +6,26 @@
  * @flow
  */
 
+//get user location when user starts up app
+
 import React, {Component} from 'react';
 import {AppState, Platform, StyleSheet, Text, View, FlatList, TouchableHighligh, TouchableOpacity} from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { SearchBar, ListItem, List } from 'react-native-elements'
 import Realm from 'realm';
 import {NavigationEvents} from "react-navigation";
-import {PlaceSchema} from "../schemas";
-import {addPlace, removePlace, getNearbyPlaces, getPlaceInfo, getPlaces, compareLocations, doesExist, getDistance} from "../utilities";
+import {PlaceSchema, EstablishmentSchema} from "../schemas";
+import {
+    addPlace,
+    removePlace,
+    getNearbyPlaces,
+    getPlaceInfo,
+    getPlaces,
+    compareLocations,
+    doesExist,
+    getDistance,
+    getSuggestions,
+} from '../utilities';
 import InfoPanel from './infoPanel';
 import MainDisplay from './mainDisplay';
 import InfoModal from './infoModal';
@@ -48,6 +60,7 @@ export default class App extends Component<Props> {
                 longitude: 50,
             },
             nearbyPlaces: [],
+            suggestions: [],
             userLocation: {
                 latitude: 50,
                 longitude: 50,
@@ -82,7 +95,33 @@ export default class App extends Component<Props> {
     /**
      * BACKGROUND LOCATION TRACKING
      */
-    componentWillMount() {
+    async componentWillMount() {
+
+        /**
+         * check if establishments have been configured for recommending
+         * 1) check if establishments exist
+         * 2) if no: instantiate establishments as false
+         * 3) else: get existing ones
+         * 4) set component state
+         */
+        await Realm.open({schema: [PlaceSchema, EstablishmentSchema]})
+            .then(realm => {
+                let establishments = realm.objects('Establishment').slice();
+                if (establishments.length != 0) {
+                    this.setState({
+                        establishments: establishments
+                    });
+                }
+
+            })
+            .catch(error => {
+                console.log(error);
+                return error;
+            });
+        /**
+         * end
+         */
+
         ////
         // 1.  Wire up event-listeners
         //
@@ -251,7 +290,16 @@ export default class App extends Component<Props> {
             console.log('user location was: ' + JSON.stringify(prevState.userLocation));
             console.log('user location changed to: ' + JSON.stringify(this.state.userLocation));
 
+            //TODO get places based off users preferences
+            let suggestions = await getSuggestions(this.state.establishments, this.state.userLocation);
+            if (suggestions){
+                this.setState({
+                    suggestions: suggestions
+                })
+            }
 
+
+            //gets users nearby saved places
             if (this.state.places.length != 0) {
                 let nearbyPlaces = await getNearbyPlaces(this.state.userLocation, this.state.places);
                 if (nearbyPlaces) {
@@ -353,6 +401,39 @@ export default class App extends Component<Props> {
 
     handleScreenFocus(){
         this.clearSearch();
+
+        /*
+         * update suggestions incase user changed preferences while on settings screen
+         * TODO: possible bug user will be realereteed to places that were already in their preferences
+         * TODO: see if user deleted any places
+         *
+         */
+
+        Realm.open({schema: [PlaceSchema, EstablishmentSchema]})
+            .then(async realm => {
+                let establishments = JSON.parse(JSON.stringify(realm.objects('Establishment')));
+                establishments = Object.values(establishments);
+                let suggestions = await getSuggestions(establishments, this.state.userLocation);
+                //let places = await getPlaces();
+                //places = Object.values(places);
+                //let nearbyPlaces = await getNearbyPlaces(this.state.userLocation, places);
+
+
+                console.log('new establishments ' + JSON.stringify(establishments));
+                console.log('new suggestions: ' + JSON.stringify(suggestions));
+                //console.log('new places: ' + JSON.stringify(places));
+                //console.log('new nearby places ' + JSON.stringify(nearbyPlaces));
+
+                this.setState({
+                    suggestions: suggestions,
+                    establishments: establishments,
+                    //places: places,
+                    //nearbyPlaces: (nearbyPlaces === undefined) ? [] : nearbyPlaces.result,
+                });
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     render() {
@@ -377,6 +458,7 @@ export default class App extends Component<Props> {
 
                         <View style={{flex: 7}}>
                             <MainDisplay
+                                suggestions={this.state.suggestions}
                                 searchInput={this.state.searchInput}
                                 location={this.state.location}
                                 predictions={this.state.predictions}

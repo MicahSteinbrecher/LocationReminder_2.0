@@ -31,6 +31,102 @@ export function compareLocations(loc1, loc2){
     return (JSON.stringify(loc1) === JSON.stringify(loc2))
 }
 
+
+/*
+ * Queries foursquare venues based on section.
+ * Helpeer function for GetSuggestions
+ */
+async function getPlacesByType(type, location) {
+    //'https://api.foursquare.com/v2/venues/explore?client_id=MB0WW2OJNKZ3KAMVMGDRAC1KWOIPPIJQMYT0PSZUAMAGDRRV&client_secret=TH5GX4CM5TI2BQV020Q0IH0EK1D2SEEVEZW2BHQNUT1G0X5T&v=20180323&limit=1&ll='+ location.latitude + ',' + location.longitude
+    //	'https://places.api.here.com/places/v1/discover/explore?app_id=x8vu33tuh4Lb0amRPB27&app_code=6IGSuBHopMd1cxLfA5Qqs&in='+ location.latitude + ',' + location.longitude + ';r=5000'
+    return fetch('https://places.api.here.com/places/v1/discover/explore?app_id=x8vu33tuh4Lb0amRPB27&app_code=6IGSuBHopMd1cxLfA5Qqsg&in='+ location.latitude + ',' + location.longitude + ';r=5000&cat='+type)
+        .then((response) => response.json())
+        .then((responseJson) => {
+            return responseJson.results.items;
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+
+}
+
+export async function getSuggestions(establishments, location) {
+
+    let suggestions = [];
+    let categories = [];
+
+    //gets venues based on users prefered categories
+    for (let i = 0; i < establishments.length; i++) {
+        console.log('establishment  ' + i + ' ' + JSON.stringify(establishments[i]));
+        if (establishments[i].isPreferred) {
+            categories.push(establishments[i].type);
+        }
+    }
+
+    console.log('utilities ln 71: ' + JSON.stringify(categories));
+    if (categories.length !== 0) {
+        let response = await getPlacesByType(categories.toString(), location);
+        console.log('utilities ln 72 get places response: ' + JSON.stringify(response, null, 2));
+        for (let i = 0; i < response.length; i++) {
+                suggestions.push({
+                    name: response[i].title,
+                    latlng: {
+                        latitude: response[i].position[0],
+                        longitude: response[i].position[1]
+                    },
+                    category: response[i].category.id
+            })
+        }
+    }
+    console.log('suggestion results ' + JSON.stringify(suggestions,null,2));
+
+    return suggestions;
+}
+
+
+//if using HERE API then use this function
+//(HERE can only get one category at a time)
+// export async function getSuggestions(establishments, location) {
+//
+//     let toFilter = [];
+//
+//     //gets venues based on users prefered categories
+//     for (let i = 0; i < establishments.length; i++) {
+//         console.log('establishment  ' + i + ' ' + JSON.stringify(establishments[i]));
+//         if (establishments[i].isPreferred) {
+//             let type = establishments[i].type;
+//
+//             let suggestions = await getPlacesByType(type, location);
+//             console.log('SUGGESTION ' + i + ' ' + JSON.stringify(suggestions, null, 2));
+//
+//             if (suggestions.length !== 0) {
+//                 Array.prototype.push.apply(toFilter, suggestions);
+//             }
+//         }
+//     }
+//     console.log('suggestion results ' + JSON.stringify(toFilter));
+//
+//
+//     let results = [];
+//     //removes duplicates from results list
+//     for (let i = 0; i < toFilter.length; i++) {
+//         console.log('name: ' + toFilter[i].id + ' at index ' + i);
+//         let isDuplicate = false;
+//         for (let j = i+1; j < toFilter.length; j++) {
+//             console.log('i: ' + i + ', j: ' + j);
+//             console.log('name: ' + toFilter[j].id)
+//             if (toFilter[i].id === toFilter[j].id) {
+//                 isDuplicate = true;
+//                 break;
+//             }
+//         }
+//         if (!isDuplicate) {
+//             results.push(toFilter[i]);
+//         }
+//     }
+//     return results;
+// }
+
 //check if user is near any of their places
 //can optionally specify distance parameter
 export async function getNearbyPlaces(location, places, distance) {

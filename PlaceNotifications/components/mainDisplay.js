@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {compareLocations} from "../utilities";
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {FlatList, StyleSheet, Text, TouchableOpacity, View, Dimensions} from "react-native";
 import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
 import { Icon } from 'react-native-elements'
 
@@ -10,7 +10,8 @@ export default class MainDisplay extends React.Component {
         super(props);
         this.state = {
             isMapReady: false,
-            predictionsDistance: null
+            predictionsDistance: null,
+            showLegend: false,
         }
     }
     componentDidUpdate(prevProps){
@@ -72,8 +73,8 @@ export default class MainDisplay extends React.Component {
                         initialRegion={{
                             latitude: this.props.marker.coordinate.latitude,
                             longitude: this.props.marker.coordinate.longitude,
-                            latitudeDelta: .461,
-                            longitudeDelta: .2105
+                            latitudeDelta: 0.1844,
+                            longitudeDelta: 0.0842
                         }}
                         showsUserLocation={true}
                         followsUserLocation={true}
@@ -84,42 +85,134 @@ export default class MainDisplay extends React.Component {
                     </MapView>
                 </View>
             );
-        } else return (
-            <MapView
-                ref={ map => { this.map = map }}
-                provider={PROVIDER_GOOGLE}
-                style={{flex: 1}}
-                initialRegion={{
-                    latitude: this.props.location.latitude,
-                    longitude: this.props.location.longitude,
-                    latitudeDelta: 0.461,
-                    longitudeDelta: .2105
-                    ,
-                }}
+        } else if (this.state.showLegend) {
+            return (
+                <View style={{flex: 1}}>
 
-                showsUserLocation={true}
-                followsUserLocation={true}
-                showsMyLocationButton={true}
-                // onUserLocationChange={(event) => (
-                //     this.props.handleLocationChange(event.nativeEvent.coordinate)
-                // )}
-                onMapReady={() => this.handleMapReady()}
+                    <MapView
+                        ref={ map => { this.map = map }}
+                        provider={PROVIDER_GOOGLE}
+                        style={{flex: 1}}
+                        initialRegion={{
+                            latitude: this.props.location.latitude,
+                            longitude: this.props.location.longitude,
+                            latitudeDelta: 0.1844,
+                            longitudeDelta: 0.0842,
+                        }}
 
-            >
-                {this.props.suggestions.map(suggestion => (
-                    <Marker
-                        coordinate={suggestion.latlng}
-                        pinColor='#3F84E6'
-                    />
-                ))}
+                        showsUserLocation={true}
+                        followsUserLocation={true}
+                        showsMyLocationButton={true}
+                        // onUserLocationChange={(event) => (
+                        //     this.props.handleLocationChange(event.nativeEvent.coordinate)
+                        // )}
+                        onMapReady={() => this.handleMapReady()}
 
-            </MapView>
-        );
+                    >
+                        {this.props.suggestions.map(suggestion => (
+                            <Marker
+                                coordinate={suggestion.latlng}
+                                pinColor='#3F84E6'
+                            />
+                        ))}
+                    </MapView>
+
+                    <View
+                        style={{
+                            opacity: .7,
+                            backgroundColor: '#517fa4',
+                            position: 'absolute',//use absolute position to show legend on top of the map
+                            top: '0%', //for vertical align
+                            alignSelf: 'flex-end', //for align to right
+                            width: Dimensions.get('window').width,
+                            height: .1*Dimensions.get('window').height,
+                        }}
+                    >
+                        <Text>
+                            TEST VIEW
+                        </Text>
+                    </View>
+
+                    <View
+                        style={{
+                            position: 'absolute',//use absolute position to show button on top of the map
+                            top: '70%', //for vertical align
+                            alignSelf: 'flex-end' //for align to right
+                        }}
+                    >
+                        <Icon
+                            reverse
+                            onPress={() => this.setState({
+                                showLegend: !this.state.showLegend
+                            })}
+                            name="info"
+                            type='antdesign'
+                            color='#517fa4'
+                        />
+                    </View>
+                </View>
+
+            );
+        }
+
+        else return (
+                <View style={{flex: 1}}>
+
+                    <MapView
+                        ref={ map => { this.map = map }}
+                        provider={PROVIDER_GOOGLE}
+                        style={{flex: 1}}
+                        initialRegion={{
+                            latitude: this.props.location.latitude,
+                            longitude: this.props.location.longitude,
+                            latitudeDelta: 0.1844,
+                            longitudeDelta: 0.0842,
+                        }}
+
+                        showsUserLocation={true}
+                        followsUserLocation={true}
+                        showsMyLocationButton={true}
+                        // onUserLocationChange={(event) => (
+                        //     this.props.handleLocationChange(event.nativeEvent.coordinate)
+                        // )}
+                        onMapReady={() => this.handleMapReady()}
+
+                    >
+                        {this.props.suggestions.map(suggestion => (
+                            <Marker
+                                coordinate={suggestion.latlng}
+                                pinColor='#3F84E6'
+                            />
+                        ))}
+                    </MapView>
+
+                    <View
+                        style={{
+                            position: 'absolute',//use absolute position to show button on top of the map
+                            top: '70%', //for vertical align
+                            alignSelf: 'flex-end' //for align to right
+                        }}
+                    >
+                        <Icon
+                            reverse
+                            onPress={() => this.setState({
+                                showLegend: !this.state.showLegend
+                            })}
+                            name="info"
+                            type='antdesign'
+                            color='#517fa4'
+                        />
+                    </View>
+                </View>
+            )
     }
 
 }
 
 const styles = StyleSheet.create({
+    icon: {
+
+    },
     container: {
         flex: 1,
         flexDirection: 'column'

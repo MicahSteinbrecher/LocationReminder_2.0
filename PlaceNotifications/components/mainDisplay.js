@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {compareLocations} from "../utilities";
 import {FlatList, StyleSheet, Text, TouchableOpacity, View, Dimensions} from "react-native";
 import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
-import { Icon } from 'react-native-elements'
+import { Icon, Card,  ListItem } from 'react-native-elements'
 
 
 export default class MainDisplay extends React.Component {
@@ -120,7 +120,7 @@ export default class MainDisplay extends React.Component {
                     <View
                         style={{
                             opacity: .7,
-                            backgroundColor: '#517fa4',
+                            backgroundColor: 'white',
                             position: 'absolute',//use absolute position to show legend on top of the map
                             top: '0%', //for vertical align
                             alignSelf: 'flex-end', //for align to right
@@ -128,9 +128,32 @@ export default class MainDisplay extends React.Component {
                             height: .1*Dimensions.get('window').height,
                         }}
                     >
-                        <Text>
-                            TEST VIEW
-                        </Text>
+                        <ListItem
+                            containerStyle= {{
+                                backgroundColor: '#393e42',
+                            }}
+                            roundAvatar
+                            titleStyle={{ color: 'white' }}
+                            title={'suggestions'}
+                            leftIcon={{ name:'room',
+                                type:'material',
+                                color:'#3F84E6'
+                            }}
+                        />
+                        <ListItem
+                            containerStyle= {{
+                                backgroundColor: '#393e42',
+                            }}
+                            roundAvatar
+                            titleStyle={{ color: 'white' }}
+                            title={'selected'}
+                            leftIcon={{ name:'room',
+                                type:'material',
+                                color:'#D85040'
+                            }}
+                        />
+
+
                     </View>
 
                     <View
@@ -147,7 +170,8 @@ export default class MainDisplay extends React.Component {
                             })}
                             name="info"
                             type='antdesign'
-                            color='#517fa4'
+                            //color='#517fa4'
+                            color='#393e42'
                         />
                     </View>
                 </View>

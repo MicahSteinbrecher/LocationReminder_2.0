@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Realm from "realm";
-import {PlaceSchema} from "./schemas";
+import {PlaceSchema, EstablishmentSchema} from "./schemas";
 import geolib from 'geolib'
 
 export function getPlaces() {
@@ -189,7 +189,7 @@ function isNearby(location, place, distanceLimit) {
 }
 
 export function doesExist(id){
-    return Realm.open({schema: [PlaceSchema]}, id)
+    return Realm.open({schema: [PlaceSchema, EstablishmentSchema]}, id)
         .then(realm => {
             //check if place already exists
             let places = realm.objects('Place').slice();
@@ -205,7 +205,7 @@ export function doesExist(id){
 //don't add if place already exists
 //updates places and returns new list
 export function addPlace(place) {
-    return Realm.open({schema: [PlaceSchema]}, place)
+    return Realm.open({schema: [PlaceSchema, EstablishmentSchema]}, place)
         .then(realm => {
             //check if place already exists
             let places = realm.objects('Place').slice();
@@ -267,7 +267,7 @@ function getPlaceLocation(id){
 
 export function removePlace(place) {
     console.log('removing place...')
-    return Realm.open({schema: [PlaceSchema]}, place)
+    return Realm.open({schema: [PlaceSchema, EstablishmentSchema]}, place)
         .then(realm => {
             realm.write(() => {
                 let places = realm.objects('Place').slice();

@@ -94,8 +94,7 @@ export default class MainDisplay extends React.Component {
                         activePlace={this.props.activePlace}
                         isModalActive={this.props.isModalActive}
                         onPressPanel={() => this.toggleModal(this.props.isModalActive)}
-                        onPressAddPlace={() => this.props.onPressAddPlace()
-                        }
+                        onPressAddPlace={() => this.props.onPressAddPlace()}
                     />
                 </View>
             );

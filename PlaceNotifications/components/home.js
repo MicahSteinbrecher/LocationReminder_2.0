@@ -340,6 +340,7 @@ export default class App extends Component<Props> {
                     });
                 }
             }
+            console.log('set doesExist to: ' + this.state.doesExist);
         }
     }
 
@@ -484,8 +485,6 @@ export default class App extends Component<Props> {
                                         longitude: this.state.activePlace.geometry.location.lng,
                                     }
                                 )}
-
-
                             />
                         </View>
 

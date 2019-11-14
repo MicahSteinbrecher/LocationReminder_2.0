@@ -3,6 +3,7 @@ import {compareLocations} from "../utilities";
 import {FlatList, StyleSheet, Text, TouchableOpacity, View, Dimensions} from "react-native";
 import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
 import { Icon, Card,  ListItem } from 'react-native-elements'
+import InfoPanel from './infoPanel';
 
 
 export default class MainDisplay extends React.Component {
@@ -67,7 +68,12 @@ export default class MainDisplay extends React.Component {
             return (
                 <View style={{flex: 1}}>
                     <MapView
-                        ref={ map => { this.map = map }}
+                        mapPadding={{
+                            top: 0,
+                            right: 0,
+                            bottom: .18*Dimensions.get('window').height,
+                            left: 0
+                        }}                        ref={ map => { this.map = map }}
                         provider={PROVIDER_GOOGLE}
                         style={{flex: 1}}
                         initialRegion={{
@@ -78,11 +84,19 @@ export default class MainDisplay extends React.Component {
                         }}
                         showsUserLocation={true}
                         followsUserLocation={true}
-                        showsMyLocationButton={true}
+                        //showsMyLocationButton={true}
                         onPress={() => this.props.toggleModal()}
                     >
                         <Marker coordinate={this.props.marker.coordinate}/>
                     </MapView>
+                    <InfoPanel
+                        doesExist={this.props.doesExist}
+                        activePlace={this.props.activePlace}
+                        isModalActive={this.props.isModalActive}
+                        onPressPanel={() => this.toggleModal(this.props.isModalActive)}
+                        onPressAddPlace={() => this.props.onPressAddPlace()
+                        }
+                    />
                 </View>
             );
         } else if (this.state.showLegend) {
@@ -112,11 +126,14 @@ export default class MainDisplay extends React.Component {
                         {this.props.suggestions.map(suggestion => (
                             <Marker
                                 coordinate={suggestion.latlng}
+                                title={suggestion.name}
+                                description={suggestion.category}
                                 pinColor='#3F84E6'
                             />
                         ))}
                     </MapView>
 
+                    {/* LEGEND */}
                     <View
                         style={{
                             opacity: .7,
@@ -152,6 +169,8 @@ export default class MainDisplay extends React.Component {
                                 color:'#D85040'
                             }}
                         />
+                        {/* LEGEND END*/}
+
 
 
                     </View>
@@ -205,6 +224,8 @@ export default class MainDisplay extends React.Component {
                         {this.props.suggestions.map(suggestion => (
                             <Marker
                                 coordinate={suggestion.latlng}
+                                title={suggestion.name}
+                                description={suggestion.category}
                                 pinColor='#3F84E6'
                             />
                         ))}
@@ -224,7 +245,7 @@ export default class MainDisplay extends React.Component {
                             })}
                             name="info"
                             type='antdesign'
-                            color='#517fa4'
+                            color='#393e42'
                         />
                     </View>
                 </View>

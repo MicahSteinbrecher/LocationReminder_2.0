@@ -1,5 +1,14 @@
 import React, {Component} from 'react';
-import { Platform, StyleSheet, View, Text, FlatList, TouchableHighlight, TouchableOpacity} from 'react-native';
+import {
+    Platform,
+    StyleSheet,
+    View,
+    Text,
+    FlatList,
+    TouchableHighlight,
+    TouchableOpacity,
+    Dimensions,
+} from 'react-native';
 import InfoModal from './infoModal'
 import { Rating } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -34,34 +43,47 @@ export default class InfoPanel extends React.Component {
             )
         }
         else if (this.props.activePlace) {
+
+            console.log('info panel active...')
+
+
             return (
                 <View style={styles.panelContainer}>
 
-                    <TouchableOpacity
-                        style={styles.panelContent}
-                        onPress={()=>this.props.onPressPanel()}
+                    {/*<TouchableOpacity*/}
+                        {/*style={styles.panelContent}*/}
+                        {/*onPress={()=>this.props.onPressPanel()}*/}
+                    {/*>*/}
+                    <View
+                        style={{
+                            // opacity: .7,
+                            // backgroundColor: '#393e42',
+                            color: 'white',
+                            flex: 5,
+                        }}
                     >
-                        <Text numberOfLines={1} style={{fontSize: 16, marginTop: 5, marginLeft: 5}}> {this.props.activePlace.name} </Text>
+                        <Text numberOfLines={1} style={{color: 'white', fontSize: 24, marginTop: 5, marginLeft: 5}}> {this.props.activePlace.name} </Text>
                         <View style={{flexDirection: 'row'}}>
-                            <Text style={{marginTop: 5, marginLeft: 5}}> {this.props.activePlace.rating} </Text>
+                            <Text style={{fontSize: 20, color: 'white', marginTop: 5, marginLeft: 5}}> {this.props.activePlace.rating} </Text>
                             <Rating
                                 readonly
+                                tintColor={'#393e42'}
                                 style={{marginTop: 5, marginLeft: 5}}
                                 type='star'
                                 fractions={1}
                                 startingValue={this.props.activePlace.rating}
-                                readonly
                                 imageSize={15}
                             />
                         </View>
-                        <Text style={{marginTop: 5, marginLeft: 5}}> {cleanString(this.props.activePlace.types[0])} </Text>
-                    </TouchableOpacity>
+                        <Text style={{fontSize: 20, color: 'white', marginTop: 5, marginLeft: 5}}> {cleanString(this.props.activePlace.types[0])} </Text>
+                    {/*</TouchableOpacity>*/}
+                    </View>
 
                     <AddPlaceButton
                         doesExist={this.props.doesExist}
                         style={styles.panelButton}
                         id={this.props.activePlace.place_id}
-                        handlePress={()=>this.props.onPressAddPlace(this.props.activePlace)}
+                        handlePress={()=>this.props.onPressAddPlace()}
                     />
 
                 </View>
@@ -75,9 +97,17 @@ export default class InfoPanel extends React.Component {
 
 const styles = StyleSheet.create({
     panelContainer: {
-        flex: 1,
-        backgroundColor: '#fff',
-        flexDirection: 'row'
+        color: 'white',
+        //flex: 1,
+        opacity: .7,
+        backgroundColor: '#393e42',
+        flexDirection: 'row',
+        position: 'absolute',//use absolute position to show legend on top of the map
+        top: '80%', //for vertical align
+        alignSelf: 'flex-end', //for align to right
+        width: Dimensions.get('window').width,
+        height: .2*Dimensions.get('window').height,
+
     },
     modalContainer: {
         flex: 6,
@@ -85,6 +115,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     panelContent: {
+        opacity: .7,
+        backgroundColor: '#393e42',
         flex: 5,
     },
     panelButton: {

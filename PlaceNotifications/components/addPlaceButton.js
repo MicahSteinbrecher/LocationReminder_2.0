@@ -13,10 +13,10 @@ export default function AddPlaceButton(props) {
         >
             <Icon
                 name='add-circle-outline'
-                color={ (props.doesExist) ? '#CCCC00' : 'blue'}
+                color={ (props.doesExist) ? '#CCCC00' : 'white'}
                 size={26}
             />
-            <Text style={{marginTop: 5, color: 'blue'}}> {(props.doesExist) ? 'SAVED' : 'SAVE'} </Text>
+            <Text style={{marginTop: 5, color: 'white'}}> {(props.doesExist) ? 'SAVED' : 'SAVE'} </Text>
 
         </TouchableOpacity>
 

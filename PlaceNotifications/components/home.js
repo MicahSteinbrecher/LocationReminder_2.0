@@ -471,23 +471,38 @@ export default class App extends Component<Props> {
                                 handleLocationChange={(location) => this.handleLocationChange(location)}
                                 handleMapDrag={(location, isMapReady) => this.handleMapDrag(location, isMapReady)}
                                 //handleMapReady={()=>this.handleMapReady()}
+
+                                doesExist={this.state.doesExist}
+                                activePlace={this.state.activePlace}
+                                isModalActive={this.state.isModalActive}
+                                onPressPanel={() => this.toggleModal(this.state.isModalActive)}
+                                onPressAddPlace={() => this.handlePressAddPlace({
+                                        id: this.state.activePlace.place_id,
+                                        name: this.state.activePlace.name,
+                                        address: this.state.activePlace.formatted_address,
+                                        latitude: this.state.activePlace.geometry.location.lat,
+                                        longitude: this.state.activePlace.geometry.location.lng,
+                                    }
+                                )}
+
+
                             />
                         </View>
 
-                        <InfoPanel
-                            doesExist={this.state.doesExist}
-                            activePlace={this.state.activePlace}
-                            isModalActive={this.state.isModalActive}
-                            onPressPanel={() => this.toggleModal(this.state.isModalActive)}
-                            onPressAddPlace={() => this.handlePressAddPlace({
-                                    id: this.state.activePlace.place_id,
-                                    name: this.state.activePlace.name,
-                                    address: this.state.activePlace.formatted_address,
-                                    latitude: this.state.activePlace.geometry.location.lat,
-                                    longitude: this.state.activePlace.geometry.location.lng,
-                                }
-                            )}
-                        />
+                        {/*<InfoPanel*/}
+                            {/*doesExist={this.state.doesExist}*/}
+                            {/*activePlace={this.state.activePlace}*/}
+                            {/*isModalActive={this.state.isModalActive}*/}
+                            {/*onPressPanel={() => this.toggleModal(this.state.isModalActive)}*/}
+                            {/*onPressAddPlace={() => this.handlePressAddPlace({*/}
+                                    {/*id: this.state.activePlace.place_id,*/}
+                                    {/*name: this.state.activePlace.name,*/}
+                                    {/*address: this.state.activePlace.formatted_address,*/}
+                                    {/*latitude: this.state.activePlace.geometry.location.lat,*/}
+                                    {/*longitude: this.state.activePlace.geometry.location.lng,*/}
+                                {/*}*/}
+                            {/*)}*/}
+                        {/*/>*/}
                     </View>
 
                 </View>

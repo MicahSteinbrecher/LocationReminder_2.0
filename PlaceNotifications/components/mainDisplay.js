@@ -197,6 +197,10 @@ export default class MainDisplay extends React.Component {
             );
         }
 
+        /*
+        *MAP WITH PREFERENCE PINS, LEGEND BUTTON, NO LEGEND
+        */
+
         else return (
                 <View style={{flex: 1}}>
 
@@ -218,14 +222,21 @@ export default class MainDisplay extends React.Component {
                         //     this.props.handleLocationChange(event.nativeEvent.coordinate)
                         // )}
                         onMapReady={() => this.handleMapReady()}
-
                     >
+                        {/*
+                        *TODO when to deselect venue
+                        * when pressing on the map
+                        * but not when dragging the map
+                        *
+                        *
+                        * */}
                         {this.props.suggestions.map(suggestion => (
                             <Marker
+                                onPress={()=>this.props.selectVenue(suggestion.name)}
                                 coordinate={suggestion.latlng}
                                 title={suggestion.name}
                                 description={suggestion.category}
-                                pinColor='#3F84E6'
+                                pinColor= {(suggestion.isSelected) ? 'red' : '#3F84E6'}
                             />
                         ))}
                     </MapView>

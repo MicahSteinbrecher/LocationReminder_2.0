@@ -74,7 +74,8 @@ export async function getSuggestions(establishments, location) {
                         latitude: response[i].position[0],
                         longitude: response[i].position[1]
                     },
-                    category: response[i].category.id
+                    category: response[i].category.id,
+                    isSelected: false,
             })
         }
     }
@@ -211,7 +212,7 @@ export function addPlace(place) {
             let places = realm.objects('Place').slice();
             for (var i = 0; i < places.length; i++){
                 if (places[i].id == place.id){
-                    alert('this place is already in your places you foolish mortal');
+                    alert('this venue is already in your places foolish mortal');
                     return places;
                 }
             }

@@ -56,14 +56,14 @@ export default class App extends Component<Props> {
             marker: null,
             activePlace: null,
             location: {
-                latitude: 50,
-                longitude: 50,
+                latitude: 32.90,
+                longitude: -96.77,
             },
             nearbyPlaces: [],
             suggestions: [],
             userLocation: {
-                latitude: 50,
-                longitude: 50,
+                latitude: 32.90,
+                longitude: -96.77,
             },
             isModalActive: false,
             isMapReady: false,
@@ -357,6 +357,20 @@ export default class App extends Component<Props> {
             });
     }
 
+    selectVenue(name) {
+        let suggestions = this.state.suggestions.slice();
+        for (var i = 0; i < suggestions.length; i++) {
+            suggestions[i].isSelected = false;
+            if (suggestions[i].name === name){
+                suggestions[i].isSelected = true;
+            }
+        }
+        console.log('SUGGESTIONS (HOME LN 369): ' + JSON.stringify(suggestions, null, 2));
+        this.setState({
+            suggestions: suggestions,
+        })
+    }
+
     handleChangeText(searchInput) {
         this.setState({
             searchInput: searchInput,
@@ -385,6 +399,8 @@ export default class App extends Component<Props> {
         })
         //Add info panel
     }
+
+    handle
 
 
     async handlePressAddPlace(place) {
@@ -472,7 +488,7 @@ export default class App extends Component<Props> {
                                 handleLocationChange={(location) => this.handleLocationChange(location)}
                                 handleMapDrag={(location, isMapReady) => this.handleMapDrag(location, isMapReady)}
                                 //handleMapReady={()=>this.handleMapReady()}
-
+                                selectVenue={(name) => this.selectVenue(name)}
                                 doesExist={this.state.doesExist}
                                 activePlace={this.state.activePlace}
                                 isModalActive={this.state.isModalActive}

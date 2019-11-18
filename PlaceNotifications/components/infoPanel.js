@@ -42,7 +42,7 @@ export default class InfoPanel extends React.Component {
                 </View>
             )
         }
-        else if (this.props.activePlace) {
+        else if (this.props.activePlace.type==='search') {
 
             console.log('info panel active...')
 
@@ -62,33 +62,82 @@ export default class InfoPanel extends React.Component {
                             flex: 5,
                         }}
                     >
-                        <Text numberOfLines={1} style={{color: 'white', fontSize: 24, marginTop: 5, marginLeft: 5}}> {this.props.activePlace.name} </Text>
+                        <Text numberOfLines={1} style={{color: 'white', fontSize: 24, marginTop: 5, marginLeft: 5}}> {this.props.activePlace.place.name} </Text>
                         <View style={{flexDirection: 'row'}}>
-                            <Text style={{fontSize: 20, color: 'white', marginTop: 5, marginLeft: 5}}> {this.props.activePlace.rating} </Text>
+                            <Text style={{fontSize: 20, color: 'white', marginTop: 5, marginLeft: 5}}> {this.props.activePlace.place.rating} </Text>
                             <Rating
                                 readonly
                                 tintColor={'#393e42'}
                                 style={{marginTop: 5, marginLeft: 5}}
                                 type='star'
                                 fractions={1}
-                                startingValue={this.props.activePlace.rating}
+                                startingValue={this.props.activePlace.place.rating}
                                 imageSize={15}
                             />
                         </View>
-                        <Text style={{fontSize: 20, color: 'white', marginTop: 5, marginLeft: 5}}> {cleanString(this.props.activePlace.types[0])} </Text>
+                        <Text style={{fontSize: 20, color: 'white', marginTop: 5, marginLeft: 5}}> {cleanString(this.props.activePlace.place.types[0])} </Text>
                     {/*</TouchableOpacity>*/}
                     </View>
 
                     <AddPlaceButton
                         doesExist={this.props.doesExist}
                         style={styles.panelButton}
-                        id={this.props.activePlace.place_id}
+                        id={this.props.activePlace.place.place_id}
                         handlePress={()=>this.props.onPressAddPlace()}
                     />
 
                 </View>
             );
         }
+
+        else if (this.props.activePlace.type==='preference') {
+
+            console.log('info panel active...')
+
+
+            return (
+                <View style={styles.panelContainer}>
+
+                    {/*<TouchableOpacity*/}
+                    {/*style={styles.panelContent}*/}
+                    {/*onPress={()=>this.props.onPressPanel()}*/}
+                    {/*>*/}
+                    <View
+                        style={{
+                            // opacity: .7,
+                            // backgroundColor: '#393e42',
+                            color: 'white',
+                            flex: 5,
+                        }}
+                    >
+                        <Text numberOfLines={1} style={{color: 'white', fontSize: 24, marginTop: 5, marginLeft: 5}}> {this.props.activePlace.place.name} </Text>
+                        <View style={{flexDirection: 'row'}}>
+                            {/*<Text style={{fontSize: 20, color: 'white', marginTop: 5, marginLeft: 5}}> {this.props.activePlace.place.rating} </Text>*/}
+                            {/*<Rating*/}
+                                {/*readonly*/}
+                                {/*tintColor={'#393e42'}*/}
+                                {/*style={{marginTop: 5, marginLeft: 5}}*/}
+                                {/*type='star'*/}
+                                {/*fractions={1}*/}
+                                {/*//startingValue={this.props.activePlace.place.rating}*/}
+                                {/*imageSize={15}*/}
+                            {/*/>*/}
+                        </View>
+                        <Text style={{fontSize: 20, color: 'white', marginTop: 5, marginLeft: 5}}> {cleanString(this.props.activePlace.place.category)} </Text>
+                        {/*</TouchableOpacity>*/}
+                    </View>
+
+                    <AddPlaceButton
+                        doesExist={this.props.doesExist}
+                        style={styles.panelButton}
+                        id={this.props.activePlace.place.place_id}
+                        handlePress={()=>this.props.onPressAddPlace()}
+                    />
+
+                </View>
+            );
+        }
+
         else return (
             <View />
         );

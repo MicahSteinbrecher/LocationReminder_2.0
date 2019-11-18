@@ -66,6 +66,7 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 
 const TabNavigator = createBottomTabNavigator(
+
     {
         Home:  Home ,
         Places: Places,

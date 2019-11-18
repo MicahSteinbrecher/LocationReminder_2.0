@@ -69,12 +69,14 @@ export async function getSuggestions(establishments, location) {
         console.log('utilities ln 72 get places response: ' + JSON.stringify(response, null, 2));
         for (let i = 0; i < response.length; i++) {
                 suggestions.push({
+                    id: response[i].id,
                     name: response[i].title,
                     latlng: {
                         latitude: response[i].position[0],
                         longitude: response[i].position[1]
                     },
                     category: response[i].category.id,
+                    address: response[i].vicinity,
                     isSelected: false,
             })
         }
@@ -189,7 +191,8 @@ function isNearby(location, place, distanceLimit) {
     return geolib.getDistance(location, place, accuracy) < 5000;
 }
 
-export function doesExist(id){
+export function doesExist(place){
+    let id = (place.type==='preference') ? place.place.id : place.place.place_id
     return Realm.open({schema: [PlaceSchema, EstablishmentSchema]}, id)
         .then(realm => {
             //check if place already exists

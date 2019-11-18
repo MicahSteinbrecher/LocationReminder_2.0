@@ -51,24 +51,24 @@ export default class App extends Component<Props> {
         super(props);
 
             this.state = {
-            searchInput: '',
-            places: [],
-            marker: null,
-            activePlace: null,
-            location: {
-                latitude: 32.90,
-                longitude: -96.77,
-            },
-            nearbyPlaces: [],
-            suggestions: [],
-            userLocation: {
-                latitude: 32.90,
-                longitude: -96.77,
-            },
-            isModalActive: false,
-            isMapReady: false,
-            doesExist: null,
-        };
+                searchInput: '',
+                places: [],
+                marker: null,
+                activePlace: null,
+                location: {
+                    latitude: 32.90,
+                    longitude: -96.77,
+                },
+                nearbyPlaces: [],
+                suggestions: [],
+                userLocation: {
+                    latitude: 32.90,
+                    longitude: -96.77,
+                },
+                isModalActive: false,
+                isMapReady: false,
+                doesExist: null,
+            };
     }
 
     /**
@@ -330,7 +330,7 @@ export default class App extends Component<Props> {
 
         if (this.state.activePlace !== null){
             if (this.state.activePlace !== prevState.activePlace || this.state.places !== prevState.places) {
-                if (await doesExist(this.state.activePlace.place_id)) {
+                if (await doesExist(this.state.activePlace)) {
                     this.setState({
                         doesExist: true
                     });
@@ -359,15 +359,22 @@ export default class App extends Component<Props> {
 
     selectVenue(name) {
         let suggestions = this.state.suggestions.slice();
+        let index = -1;
         for (var i = 0; i < suggestions.length; i++) {
             suggestions[i].isSelected = false;
             if (suggestions[i].name === name){
                 suggestions[i].isSelected = true;
+                index=i;
             }
         }
         console.log('SUGGESTIONS (HOME LN 369): ' + JSON.stringify(suggestions, null, 2));
+
         this.setState({
             suggestions: suggestions,
+            activePlace: {
+                type: 'preference',
+                place: suggestions[index]
+            },
         })
     }
 
@@ -388,7 +395,10 @@ export default class App extends Component<Props> {
 
         this.props.navigation.navigate('Details');
         this.setState({
-            activePlace: place,
+            activePlace: {
+                place: place,
+                type: 'search',
+            },
             marker: {
                 coordinate: {
                     latitude: place.geometry.location.lat,
@@ -399,9 +409,6 @@ export default class App extends Component<Props> {
         })
         //Add info panel
     }
-
-    handle
-
 
     async handlePressAddPlace(place) {
         let places = [];
@@ -494,11 +501,11 @@ export default class App extends Component<Props> {
                                 isModalActive={this.state.isModalActive}
                                 onPressPanel={() => this.toggleModal(this.state.isModalActive)}
                                 onPressAddPlace={() => this.handlePressAddPlace({
-                                        id: this.state.activePlace.place_id,
-                                        name: this.state.activePlace.name,
-                                        address: this.state.activePlace.formatted_address,
-                                        latitude: this.state.activePlace.geometry.location.lat,
-                                        longitude: this.state.activePlace.geometry.location.lng,
+                                        id: (this.state.activePlace.type==='preference') ? this.state.activePlace.place.id : this.state.activePlace.place.place_id,
+                                        name: this.state.activePlace.place.name,
+                                        address: (this.state.activePlace.type==='preference') ? this.state.activePlace.place.address : this.state.activePlace.place.formatted_address,
+                                        latitude:  (this.state.activePlace.type==='preference') ? this.state.activePlace.place.latlng.latitude : this.state.activePlace.place.geometry.location.lat,
+                                        longitude: (this.state.activePlace.type==='preference') ? this.state.activePlace.place.latlng.longitude : this.state.activePlace.place.geometry.location.lng,
                                     }
                                 )}
                             />

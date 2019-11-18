@@ -98,7 +98,125 @@ export default class MainDisplay extends React.Component {
                     />
                 </View>
             );
-        } else if (this.state.showLegend) {
+        }
+        /*
+        * MAP WITH PREFERENCE PINS, LEGEND BUTTON, LEGEND AND INFO PANEL FOR HIGHLIGHTED VENUE
+        *
+        */
+
+        else if (this.state.showLegend && this.props.activePlace) {
+            return (
+                <View style={{flex: 1}}>
+
+                    <MapView
+                        ref={ map => { this.map = map }}
+                        provider={PROVIDER_GOOGLE}
+                        style={{flex: 1}}
+                        initialRegion={{
+                            latitude: this.props.location.latitude,
+                            longitude: this.props.location.longitude,
+                            latitudeDelta: 0.1844,
+                            longitudeDelta: 0.0842,
+                        }}
+
+                        showsUserLocation={true}
+                        followsUserLocation={true}
+                        //showsMyLocationButton={true}
+                        // onUserLocationChange={(event) => (
+                        //     this.props.handleLocationChange(event.nativeEvent.coordinate)
+                        // )}
+                        onMapReady={() => this.handleMapReady()}
+
+                    >
+                        {this.props.suggestions.map(suggestion => (
+                            <Marker
+                                coordinate={suggestion.latlng}
+                                //title={suggestion.name}
+                                //description={suggestion.category}
+                                onPress={()=>this.props.selectVenue(suggestion.name)}
+                                pinColor= {(suggestion.isSelected) ? 'red' : '#3F84E6'}
+                            />
+                        ))}
+                    </MapView>
+
+                    {/* LEGEND */}
+                    <View
+                        style={{
+                            opacity: .7,
+                            backgroundColor: 'white',
+                            position: 'absolute',//use absolute position to show legend on top of the map
+                            top: '0%', //for vertical align
+                            alignSelf: 'flex-end', //for align to right
+                            width: Dimensions.get('window').width,
+                            height: .1*Dimensions.get('window').height,
+                        }}
+                    >
+                        <ListItem
+                            containerStyle= {{
+                                backgroundColor: '#393e42',
+                            }}
+                            roundAvatar
+                            titleStyle={{ color: 'white' }}
+                            title={'suggestions'}
+                            leftIcon={{ name:'room',
+                                type:'material',
+                                color:'#3F84E6'
+                            }}
+                        />
+                        <ListItem
+                            containerStyle= {{
+                                backgroundColor: '#393e42',
+                            }}
+                            roundAvatar
+                            titleStyle={{ color: 'white' }}
+                            title={'selected'}
+                            leftIcon={{ name:'room',
+                                type:'material',
+                                color:'#D85040'
+                            }}
+                        />
+                        {/* LEGEND END*/}
+
+
+
+                    </View>
+
+                    <InfoPanel
+                        doesExist={this.props.doesExist}
+                        activePlace={this.props.activePlace}
+                        isModalActive={this.props.isModalActive}
+                        onPressPanel={() => this.toggleModal(this.props.isModalActive)}
+                        onPressAddPlace={() => this.props.onPressAddPlace()}
+                    />
+
+                    <View
+                        style={{
+                            position: 'absolute',//use absolute position to show button on top of the map
+                            top: '70%', //for vertical align
+                            alignSelf: 'flex-end' //for align to right
+                        }}
+                    >
+                        <Icon
+                            reverse
+                            onPress={() => this.setState({
+                                showLegend: !this.state.showLegend
+                            })}
+                            name="info"
+                            type='antdesign'
+                            //color='#517fa4'
+                            color='#393e42'
+                        />
+                    </View>
+                </View>
+
+            );
+        }
+
+        /*
+        * MAP WITH PREFERENCE PINS, LEGEND BUTTON, AND LEGEND
+        *
+        */
+        else if (this.state.showLegend) {
             return (
                 <View style={{flex: 1}}>
 
@@ -125,8 +243,8 @@ export default class MainDisplay extends React.Component {
                         {this.props.suggestions.map(suggestion => (
                             <Marker
                                 coordinate={suggestion.latlng}
-                                title={suggestion.name}
-                                description={suggestion.category}
+                                //title={suggestion.name}
+                                //description={suggestion.category}
                                 pinColor='#3F84E6'
                             />
                         ))}
@@ -198,7 +316,81 @@ export default class MainDisplay extends React.Component {
         }
 
         /*
-        *MAP WITH PREFERENCE PINS, LEGEND BUTTON, NO LEGEND
+        *MAP WITH PREFERENCE PINS, LEGEND BUTTON, AND INFO PANEL FOR HIGHLIGHTED VENUE
+        */
+
+        if (this.props.activePlace){
+            return (
+                <View style={{flex: 1}}>
+
+                    <MapView
+                        ref={ map => { this.map = map }}
+                        provider={PROVIDER_GOOGLE}
+                        style={{flex: 1}}
+                        initialRegion={{
+                            latitude: this.props.location.latitude,
+                            longitude: this.props.location.longitude,
+                            latitudeDelta: 0.1844,
+                            longitudeDelta: 0.0842,
+                        }}
+
+                        showsUserLocation={true}
+                        followsUserLocation={true}
+                        //showsMyLocationButton={true}
+                        // onUserLocationChange={(event) => (
+                        //     this.props.handleLocationChange(event.nativeEvent.coordinate)
+                        // )}
+                        onMapReady={() => this.handleMapReady()}
+                    >
+                        {/*
+                        *TODO when to deselect venue
+                        * when pressing on the map
+                        * but not when dragging the map
+                        *
+                        *
+                        * */}
+                        {this.props.suggestions.map(suggestion => (
+                            <Marker
+                                onPress={()=>this.props.selectVenue(suggestion.name)}
+                                coordinate={suggestion.latlng}
+                                //title={suggestion.name}
+                                //description={suggestion.category}
+                                pinColor= {(suggestion.isSelected) ? 'red' : '#3F84E6'}
+                            />
+                        ))}
+                    </MapView>
+
+                    <InfoPanel
+                        doesExist={this.props.doesExist}
+                        activePlace={this.props.activePlace}
+                        isModalActive={this.props.isModalActive}
+                        onPressPanel={() => this.toggleModal(this.props.isModalActive)}
+                        onPressAddPlace={() => this.props.onPressAddPlace()}
+                    />
+
+                    <View
+                        style={{
+                            position: 'absolute',//use absolute position to show button on top of the map
+                            top: '70%', //for vertical align
+                            alignSelf: 'flex-end' //for align to right
+                        }}
+                    >
+                        <Icon
+                            reverse
+                            onPress={() => this.setState({
+                                showLegend: !this.state.showLegend
+                            })}
+                            name="info"
+                            type='antdesign'
+                            color='#393e42'
+                        />
+                    </View>
+                </View>
+            )
+        }
+
+        /*
+        *MAP WITH PREFERENCE PINS, LEGEND BUTTON
         */
 
         else return (
@@ -234,9 +426,9 @@ export default class MainDisplay extends React.Component {
                             <Marker
                                 onPress={()=>this.props.selectVenue(suggestion.name)}
                                 coordinate={suggestion.latlng}
-                                title={suggestion.name}
-                                description={suggestion.category}
-                                pinColor= {(suggestion.isSelected) ? 'red' : '#3F84E6'}
+                                //title={suggestion.name}
+                                //description={suggestion.category}
+                                pinColor= {'#3F84E6'}
                             />
                         ))}
                     </MapView>

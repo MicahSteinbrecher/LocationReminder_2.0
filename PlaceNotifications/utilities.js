@@ -39,6 +39,7 @@ export function compareLocations(loc1, loc2){
 async function getPlacesByType(type, location) {
     //'https://api.foursquare.com/v2/venues/explore?client_id=MB0WW2OJNKZ3KAMVMGDRAC1KWOIPPIJQMYT0PSZUAMAGDRRV&client_secret=TH5GX4CM5TI2BQV020Q0IH0EK1D2SEEVEZW2BHQNUT1G0X5T&v=20180323&limit=1&ll='+ location.latitude + ',' + location.longitude
     //	'https://places.api.here.com/places/v1/discover/explore?app_id=x8vu33tuh4Lb0amRPB27&app_code=6IGSuBHopMd1cxLfA5Qqs&in='+ location.latitude + ',' + location.longitude + ';r=5000'
+    console.log('getting venues of type: ' + type);
     return fetch('https://places.api.here.com/places/v1/discover/explore?app_id=x8vu33tuh4Lb0amRPB27&app_code=6IGSuBHopMd1cxLfA5Qqsg&in='+ location.latitude + ',' + location.longitude + ';r=5000&cat='+type)
         .then((response) => response.json())
         .then((responseJson) => {

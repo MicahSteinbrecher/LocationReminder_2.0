@@ -37,6 +37,39 @@ export default class MainDisplay extends React.Component {
         });
     }
 
+    getIcon(place){
+        if (place.category==='restaurant'){
+            if (place.isSelected) {
+                return require('../icons/food_selected.png')
+            }
+            return require('../icons/food.png')
+        } if (place.category==='coffee-tea') {
+            if (place.isSelected) {
+                return require('../icons/cafe_selected.png')
+            }
+            return require('../icons/cafe.png')
+        } if (place.category==='shop') {
+            if (place.isSelected) {
+                return require('../icons/shopping_selected.png')
+            }
+            return require('../icons/shopping.png')
+        } if (place.category==='recreation') {
+            if (place.isSelected) {
+                return require('../icons/nature_selected.png')
+            }
+            return require('../icons/nature.png')
+        } if (place.category==='museum' || place.category==='sights-museums') {
+            if (place.isSelected) {
+                return require('../icons/museum_selected.png')
+            }
+            return require('../icons/museum.png')
+        }
+        if (place.isSelected){
+            return require('../icons/marker_selected.png')
+        }
+        return require('../icons/marker.png')
+    }
+
     render() {
         if (this.props.searchInput && this.props.marker === null) {
             //PLACE RESULTS LIST
@@ -134,7 +167,8 @@ export default class MainDisplay extends React.Component {
                                 //title={suggestion.name}
                                 //description={suggestion.category}
                                 onPress={()=>this.props.selectVenue(suggestion.name)}
-                                pinColor= {(suggestion.isSelected) ? 'red' : '#3F84E6'}
+                                image= {(suggestion.isSelected) ? require('../icons/cafe_selected.png') : require('../icons/cafe.png')}
+                                //image={this.getIcon(suggestion)}
                             />
                         ))}
                     </MapView>
@@ -355,7 +389,8 @@ export default class MainDisplay extends React.Component {
                                 coordinate={suggestion.latlng}
                                 //title={suggestion.name}
                                 //description={suggestion.category}
-                                pinColor= {(suggestion.isSelected) ? 'red' : '#3F84E6'}
+                                image={this.getIcon(suggestion)}
+                                //image= {(suggestion.isSelected) ? require('../icons/cafe_selected.png') : require('../icons/cafe.png')}
                             />
                         ))}
                     </MapView>
@@ -428,10 +463,35 @@ export default class MainDisplay extends React.Component {
                                 coordinate={suggestion.latlng}
                                 //title={suggestion.name}
                                 //description={suggestion.category}
-                                pinColor= {'#3F84E6'}
+
+                                //image={require('../icons/cafe.png')}
+                                image={this.getIcon(suggestion)}
+
+                                //pinColor= {'#3F84E6'}
                             />
                         ))}
                     </MapView>
+
+                    <View
+                        style={{
+                            position: 'absolute',//use absolute position to show button on top of the map
+                            top: '90%', //for vertical align
+                            alignSelf: 'flex-end', //for align to right
+                            width: Dimensions.get('window').width,
+                            height: .1*Dimensions.get('window').height,
+                            backgroundColor: 'white',
+
+                        }}
+                    >
+                        <Text
+                            style={{
+                                color:'#337AF9',
+                                paddingLeft: 20,
+                                fontSize: 16
+                            }}>
+                            Show List
+                        </Text>
+                    </View>
 
                     <View
                         style={{

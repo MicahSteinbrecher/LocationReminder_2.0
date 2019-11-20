@@ -371,10 +371,10 @@ export default class App extends Component<Props> {
 
         this.setState({
             suggestions: suggestions,
-            activePlace: {
-                type: 'preference',
-                place: suggestions[index]
-            },
+            // activePlace: {
+            //     type: 'preference',
+            //     place: suggestions[index]
+            // },
         })
     }
 
@@ -451,6 +451,7 @@ export default class App extends Component<Props> {
                 this.setState({
                     suggestions: suggestions,
                     establishments: establishments,
+                    activePlace: null,
                     //places: places,
                     //nearbyPlaces: (nearbyPlaces === undefined) ? [] : nearbyPlaces.result,
                 });

@@ -69,6 +69,79 @@ export async function getSuggestions(establishments, location) {
         let response = await getPlacesByType(categories.toString(), location);
         console.log('utilities ln 72 get places response: ' + JSON.stringify(response, null, 2));
         for (let i = 0; i < response.length; i++) {
+            let hours = response[i].openingHours;
+            if (hours){
+
+                let timeStamp = new Date();
+                timeStamp = {
+                    day: timeStamp.getDay(),
+                    time: parseInt(''+ timeStamp.getHours() + timeStamp.getMinutes())
+                }
+
+                let openingHours = {};
+                for (let j = 0; j < hours.structured.length; j++){
+                    let start  = parseInt(hours.structured[j].start.slice(1,5));
+                    let duration = parseInt(''+hours.structured[j].duration.slice(2,4)+hours.structured[j].duration.slice(5,7))
+                    let end = start+duration;
+                    let recurrence = hours.structured[j].recurrence;
+                    if (recurrence.includes('MO')){
+                        openingHours[0]={
+                            start: start,
+                            end: end
+                        }
+                    }
+                    if (recurrence.includes('TU')){
+                        openingHours[1]={
+                            start: start,
+                            end: end
+                        }
+                    }
+                    if (recurrence.includes('WE')){
+                        openingHours[2]={
+                            start: start,
+                            end: end
+                        }
+                    }
+                    if (recurrence.includes('TH')){
+                        openingHours[3]={
+                            start: start,
+                            end: end
+                        }
+                    }
+                    if (recurrence.includes('FR')){
+                        openingHours[4]={
+                            start: start,
+                            end: end
+                        }
+                    }
+                    if (recurrence.includes('SA')){
+                        openingHours[5]={
+                            start: start,
+                            end: end
+                        }
+                    }
+                    if (recurrence.includes('SU')){
+                        openingHours[6]={
+                            start: start,
+                            end: end
+                        }
+                    }
+                }
+
+                if (hours.isOpen) {
+                    hours.isOpenTxt = 'Open';
+                    hours.statusChange = "Closes " + formatTime(openingHours[timeStamp.day].end, response[i].title)
+                }
+                else {
+                    hours.isOpenTxt = 'Closed';
+                    if (timeStamp.time < openingHours[timeStamp.day].start) {
+                        hours.statusChange = "Opens " + formatTime(openingHours[timeStamp.day].start)
+                    }
+                    else {
+                        hours.statusChange = "Opens " + formatTime(openingHours[timeStamp.day + 1].start)
+                    }
+                }
+            }
                 suggestions.push({
                     id: response[i].id,
                     name: response[i].title,
@@ -79,6 +152,8 @@ export async function getSuggestions(establishments, location) {
                     category: response[i].category.id,
                     address: response[i].vicinity,
                     isSelected: false,
+                    hours: (hours)  ? hours : null,
+                    distance: (response[i].distance*0.000621371).toFixed(2)
             })
         }
     }
@@ -87,6 +162,40 @@ export async function getSuggestions(establishments, location) {
     return suggestions;
 }
 
+function formatTime(time, name){
+    let minutes = parseInt(time.toString().slice(-2));
+    if (minutes>=60) {
+        time += 40
+    }
+    if (time > 2400){
+        time -=2400;
+        if (time >= 1000){
+            time=time.toString();
+            return time.slice(0,2)+':'+time.slice(2)+' a.m.';
+        }
+        time=time.toString();
+        return time.slice(0,1)+':'+time.slice(1)+' a.m.';
+    }
+    if (time >= 2400 && time >= 2500){
+        time=time.toString();
+        return time.slice(0,2)+':'+time.slice(2)+' a.m.';
+    }
+    if (time > 1200){
+        time -=1200;
+        if (time >= 1000){
+            time=time.toString();
+            return time.slice(0,2)+':'+time.slice(2)+' p.m.';
+        }
+        time=time.toString();
+        return time.slice(0,1)+':'+time.slice(1)+' p.m.';
+    }
+    if (time >= 1000){
+        time=time.toString();
+        return time.slice(0,2)+':'+time.slice(2)+' p.m.';
+    }
+    time=time.toString();
+    return time.slice(0,1)+':'+time.slice(1)+' a.m.';
+}
 
 //if using HERE API then use this function
 //(HERE can only get one category at a time)

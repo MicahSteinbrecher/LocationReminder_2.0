@@ -15,6 +15,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import ActionSheet from "react-native-actionsheet";
 import AddPlaceButton from "./addPlaceButton";
 import {cleanString} from "../utilities";
+import Hours from './hours';
+import RouteButton from './routeButton';
 
 export default class InfoPanel extends React.Component {
     constructor(props){
@@ -28,6 +30,7 @@ export default class InfoPanel extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.activePlace !== this.props.activePlace) {
             console.log('info panel updated');
+
         }
     }
 
@@ -45,7 +48,6 @@ export default class InfoPanel extends React.Component {
         else if (this.props.activePlace.type==='search') {
 
             console.log('info panel active...')
-
 
             return (
                 <View style={styles.panelContainer}>
@@ -97,11 +99,6 @@ export default class InfoPanel extends React.Component {
 
             return (
                 <View style={styles.panelContainer}>
-
-                    {/*<TouchableOpacity*/}
-                    {/*style={styles.panelContent}*/}
-                    {/*onPress={()=>this.props.onPressPanel()}*/}
-                    {/*>*/}
                     <View
                         style={{
                             // opacity: .7,
@@ -112,18 +109,10 @@ export default class InfoPanel extends React.Component {
                     >
                         <Text numberOfLines={1} style={{color: 'white', fontSize: 24, marginTop: 5, marginLeft: 5}}> {this.props.activePlace.place.name} </Text>
                         <View style={{flexDirection: 'row'}}>
-                            {/*<Text style={{fontSize: 20, color: 'white', marginTop: 5, marginLeft: 5}}> {this.props.activePlace.place.rating} </Text>*/}
-                            {/*<Rating*/}
-                                {/*readonly*/}
-                                {/*tintColor={'#393e42'}*/}
-                                {/*style={{marginTop: 5, marginLeft: 5}}*/}
-                                {/*type='star'*/}
-                                {/*fractions={1}*/}
-                                {/*//startingValue={this.props.activePlace.place.rating}*/}
-                                {/*imageSize={15}*/}
-                            {/*/>*/}
+                            <Text style={{fontSize: 20, color: 'white', marginTop: 5, marginLeft: 5}}> {cleanString(this.props.activePlace.place.category)} </Text>
+                            <Text style={{fontSize: 20, color: 'white', marginTop: 5, marginLeft: 5}}> {this.props.activePlace.place.distance} mi. </Text>
                         </View>
-                        <Text style={{fontSize: 20, color: 'white', marginTop: 5, marginLeft: 5}}> {cleanString(this.props.activePlace.place.category)} </Text>
+                        <Hours hours={this.props.activePlace.place.hours}/>
                         {/*</TouchableOpacity>*/}
                     </View>
 
@@ -148,7 +137,6 @@ const styles = StyleSheet.create({
     panelContainer: {
         color: 'white',
         //flex: 1,
-        opacity: .7,
         backgroundColor: '#393e42',
         flexDirection: 'row',
         position: 'absolute',//use absolute position to show legend on top of the map
@@ -164,7 +152,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     panelContent: {
-        opacity: .7,
         backgroundColor: '#393e42',
         flex: 5,
     },

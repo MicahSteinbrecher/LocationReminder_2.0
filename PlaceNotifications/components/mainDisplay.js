@@ -134,7 +134,6 @@ export default class MainDisplay extends React.Component {
         }
         /*
         * MAP WITH PREFERENCE PINS, LEGEND BUTTON, LEGEND AND INFO PANEL FOR HIGHLIGHTED VENUE
-        *
         */
 
         else if (this.state.showLegend && this.props.activePlace) {
@@ -166,7 +165,7 @@ export default class MainDisplay extends React.Component {
                                 coordinate={suggestion.latlng}
                                 //title={suggestion.name}
                                 //description={suggestion.category}
-                                onPress={()=>this.props.selectVenue(suggestion.name)}
+                                onPress={()=>this.props.selectVenue(suggestion.id)}
                                 image= {(suggestion.isSelected) ? require('../icons/cafe_selected.png') : require('../icons/cafe.png')}
                                 //image={this.getIcon(suggestion)}
                             />
@@ -385,7 +384,7 @@ export default class MainDisplay extends React.Component {
                         * */}
                         {this.props.suggestions.map(suggestion => (
                             <Marker
-                                onPress={()=>this.props.selectVenue(suggestion.name)}
+                                onPress={()=>this.props.selectVenue(suggestion.id)}
                                 coordinate={suggestion.latlng}
                                 //title={suggestion.name}
                                 //description={suggestion.category}
@@ -459,7 +458,7 @@ export default class MainDisplay extends React.Component {
                         * */}
                         {this.props.suggestions.map(suggestion => (
                             <Marker
-                                onPress={()=>this.props.selectVenue(suggestion.name)}
+                                onPress={()=>this.props.selectVenue(suggestion.id)}
                                 coordinate={suggestion.latlng}
                                 //title={suggestion.name}
                                 //description={suggestion.category}
@@ -472,26 +471,6 @@ export default class MainDisplay extends React.Component {
                         ))}
                     </MapView>
 
-                    <View
-                        style={{
-                            position: 'absolute',//use absolute position to show button on top of the map
-                            top: '90%', //for vertical align
-                            alignSelf: 'flex-end', //for align to right
-                            width: Dimensions.get('window').width,
-                            height: .1*Dimensions.get('window').height,
-                            backgroundColor: 'white',
-
-                        }}
-                    >
-                        <Text
-                            style={{
-                                color:'#337AF9',
-                                paddingLeft: 20,
-                                fontSize: 16
-                            }}>
-                            Show List
-                        </Text>
-                    </View>
 
                     <View
                         style={{

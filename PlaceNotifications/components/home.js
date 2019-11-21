@@ -357,12 +357,12 @@ export default class App extends Component<Props> {
             });
     }
 
-    selectVenue(name) {
+    selectVenue(id) {
         let suggestions = this.state.suggestions.slice();
         let index = -1;
         for (var i = 0; i < suggestions.length; i++) {
             suggestions[i].isSelected = false;
-            if (suggestions[i].name === name){
+            if (suggestions[i].id === id){
                 suggestions[i].isSelected = true;
                 index=i;
             }
@@ -371,10 +371,10 @@ export default class App extends Component<Props> {
 
         this.setState({
             suggestions: suggestions,
-            // activePlace: {
-            //     type: 'preference',
-            //     place: suggestions[index]
-            // },
+            activePlace: {
+                type: 'preference',
+                place: suggestions[index]
+            },
         })
     }
 
@@ -496,7 +496,7 @@ export default class App extends Component<Props> {
                                 handleLocationChange={(location) => this.handleLocationChange(location)}
                                 handleMapDrag={(location, isMapReady) => this.handleMapDrag(location, isMapReady)}
                                 //handleMapReady={()=>this.handleMapReady()}
-                                selectVenue={(name) => this.selectVenue(name)}
+                                selectVenue={(id) => this.selectVenue(id)}
                                 doesExist={this.state.doesExist}
                                 activePlace={this.state.activePlace}
                                 isModalActive={this.state.isModalActive}

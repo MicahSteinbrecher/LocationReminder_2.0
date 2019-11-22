@@ -176,7 +176,8 @@ function formatTime(time, name){
         time=time.toString();
         return time.slice(0,1)+':'+time.slice(1)+' a.m.';
     }
-    if (time >= 2400 && time >= 2500){
+    if (time >= 2400 && time <= 2500){
+        time-=1200;
         time=time.toString();
         return time.slice(0,2)+':'+time.slice(2)+' a.m.';
     }

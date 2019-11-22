@@ -11,7 +11,7 @@
 import React, {Component} from 'react';
 import {AppState, Platform, StyleSheet, Text, View, FlatList, TouchableHighligh, TouchableOpacity} from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { SearchBar, ListItem, List } from 'react-native-elements'
+import { SearchBar, ListItem, List, Button } from 'react-native-elements'
 import Realm from 'realm';
 import {NavigationEvents} from "react-navigation";
 import {PlaceSchema, EstablishmentSchema} from "../schemas";
@@ -198,7 +198,7 @@ export default class App extends Component<Props> {
         }
         //alert("on location fire: " + JSON.stringify(location));
         //console.log('user location: ' + JSON.stringify(this.state.userLocation));
-            if (this.state.location.latitude === 50 && this.state.location.longitude === 50) {
+            if (this.state.location.latitude === 32.90 && this.state.location.longitude === -96.77) {
                 console.log("FOUND USER'S LOCATION: " + JSON.stringify(location));
                 this.setState({
                     location: location,
@@ -235,13 +235,13 @@ export default class App extends Component<Props> {
         this.setState({isMapReady: true});
     }
 
-    handleMapDrag(location, isMapReady){
-        this.setState({location: {
-                latitude: location.latitude,
-                longitude: location.longitude
-            }
-        });
-    }
+    // handleMapDrag(location, isMapReady){
+    //     this.setState({location: {
+    //             latitude: location.latitude,
+    //             longitude: location.longitude
+    //         }
+    //     });
+    // }
 
     toggleModal(isModalActive){
         this.setState({
@@ -274,6 +274,15 @@ export default class App extends Component<Props> {
         this.setState({
             places: places,
         });
+    }
+
+    async updateSuggestions(location) {
+        let suggestions = await getSuggestions(this.state.establishments, location);
+        if (suggestions){
+            this.setState({
+                suggestions: suggestions
+            })
+        }
     }
 
     async componentDidUpdate(prevProps, prevState) {
@@ -483,6 +492,7 @@ export default class App extends Component<Props> {
 
                         <View style={{flex: 7}}>
                             <MainDisplay
+                                updateSuggestions={(location)=>this.updateSuggestions(location)}
                                 suggestions={this.state.suggestions}
                                 searchInput={this.state.searchInput}
                                 location={this.state.location}
@@ -493,8 +503,8 @@ export default class App extends Component<Props> {
                                         id: this.state.predictions[i].place_id
                                     }
                                 )}
-                                handleLocationChange={(location) => this.handleLocationChange(location)}
-                                handleMapDrag={(location, isMapReady) => this.handleMapDrag(location, isMapReady)}
+                                // handleLocationChange={(location) => this.handleLocationChange(location)}
+                                //handleMapDrag={(location, isMapReady) => this.handleMapDrag(location, isMapReady)}
                                 //handleMapReady={()=>this.handleMapReady()}
                                 selectVenue={(id) => this.selectVenue(id)}
                                 doesExist={this.state.doesExist}

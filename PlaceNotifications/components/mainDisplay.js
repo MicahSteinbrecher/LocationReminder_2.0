@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {compareLocations} from "../utilities";
 import {FlatList, StyleSheet, Text, TouchableOpacity, View, Dimensions} from "react-native";
 import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
-import { Icon, Card,  ListItem } from 'react-native-elements'
+import { Icon, Card,  ListItem, Button } from 'react-native-elements'
 import InfoPanel from './infoPanel';
-
+import RedoSearch from './redoSearch';
 
 export default class MainDisplay extends React.Component {
     constructor(props){
@@ -13,6 +13,9 @@ export default class MainDisplay extends React.Component {
             isMapReady: false,
             predictionsDistance: null,
             showLegend: false,
+            isDraggingMap: false,
+            newView: false,
+            region: null,
         }
     }
     componentDidUpdate(prevProps){
@@ -70,6 +73,37 @@ export default class MainDisplay extends React.Component {
         return require('../icons/marker.png')
     }
 
+    handleRegionChangeComplete(region){
+        if (this.state.isDraggingMap) {
+            this.setState({
+                isDraggingMap: false,
+            });
+        }
+
+        if (!this.state.isDraggingMap) {
+            return;
+        }
+
+        this.setState({
+            newView: true,
+            region: region
+        })
+    }
+
+    setMapDragging() {
+        if (!this.state.isDraggingMap) {
+            this.setState({
+                isDraggingMap: true,
+            });
+        }
+    };
+
+    handleSearch(){
+        this.props.updateSuggestions(this.state.region);
+        this.setState({
+            newView: false
+        })
+    }
     render() {
         if (this.props.searchInput && this.props.marker === null) {
             //PLACE RESULTS LIST
@@ -440,7 +474,8 @@ export default class MainDisplay extends React.Component {
                             latitudeDelta: 0.1844,
                             longitudeDelta: 0.0842,
                         }}
-
+                        onPanDrag={()=>this.setMapDragging()}
+                        onRegionChangeComplete={(region) => this.handleRegionChangeComplete(region)}
                         showsUserLocation={true}
                         followsUserLocation={true}
                         showsMyLocationButton={true}
@@ -470,6 +505,11 @@ export default class MainDisplay extends React.Component {
                             />
                         ))}
                     </MapView>
+
+                    <RedoSearch
+                        handleSearch={()=>this.handleSearch()}
+                        newView={this.state.newView}
+                    />
 
 
                     <View

@@ -80,66 +80,98 @@ export async function getSuggestions(establishments, location) {
 
                 let openingHours = {};
                 for (let j = 0; j < hours.structured.length; j++){
-                    let start  = parseInt(hours.structured[j].start.slice(1,5));
+                    let start = parseInt(hours.structured[j].start.slice(1, 5));
                     let duration = parseInt(''+hours.structured[j].duration.slice(2,4)+hours.structured[j].duration.slice(5,7))
                     let end = start+duration;
                     let recurrence = hours.structured[j].recurrence;
                     if (recurrence.includes('MO')){
                         openingHours[0]={
+                            day: 'MO',
                             start: start,
                             end: end
                         }
                     }
                     if (recurrence.includes('TU')){
                         openingHours[1]={
+                            day: 'TU',
                             start: start,
                             end: end
                         }
                     }
                     if (recurrence.includes('WE')){
                         openingHours[2]={
+                            day: 'WE',
                             start: start,
                             end: end
                         }
                     }
                     if (recurrence.includes('TH')){
                         openingHours[3]={
+                            day: 'TH',
+
                             start: start,
                             end: end
                         }
                     }
                     if (recurrence.includes('FR')){
                         openingHours[4]={
+                            day: 'FR',
+
                             start: start,
                             end: end
                         }
                     }
                     if (recurrence.includes('SA')){
                         openingHours[5]={
+                            day: 'SA',
+
                             start: start,
                             end: end
                         }
                     }
                     if (recurrence.includes('SU')){
                         openingHours[6]={
+                            day: 'SU',
+
                             start: start,
                             end: end
                         }
                     }
                 }
+                // for (let j=0;j < 6; j++){
+                //     if (typeof  openingHours[j] === 'undefined'){
+                //         openingHours[j]={
+                //             start:null,
+                //             end: null
+                //         }
+                //     }
+                // }
 
                 if (hours.isOpen) {
                     hours.isOpenTxt = 'Open';
-                    hours.statusChange = "Closes " + formatTime(openingHours[timeStamp.day].end, response[i].title)
+                    hours.statusChange = "Closes " + formatTime(openingHours[timeStamp.day].end, response[i].title);
                 }
                 else {
                     hours.isOpenTxt = 'Closed';
-                    if (timeStamp.time < openingHours[timeStamp.day].start) {
-                        hours.statusChange = "Opens " + formatTime(openingHours[timeStamp.day].start)
+
+                    if (openingHours[timeStamp.day]) {
+                        if (timeStamp.time < openingHours[timeStamp.day].start) {
+                            hours.statusChange = "Opens " + formatTime(openingHours[timeStamp.day].start);
+                        } else {
+                            let index = 1;
+                            while (!openingHours[(timeStamp.day + index) % 6].start) {
+                                index++;
+                            }
+                            hours.statusChange = "Opens " + formatTime(openingHours[(timeStamp.day + index)%6].start + ' ' + openingHours[(timeStamp.day + index)%6].day);
+                        }
+                    } else {
+                        let index = 1;
+                        while (!openingHours[(timeStamp.day + index) % 6].start) {
+                            index++;
+                        }
+                        hours.statusChange = "Opens " + formatTime(openingHours[(timeStamp.day + index)%6].start + ' ' + openingHours[(timeStamp.day + index)%6].day);
                     }
-                    else {
-                        hours.statusChange = "Opens " + formatTime(openingHours[timeStamp.day + 1].start)
-                    }
+
                 }
             }
                 suggestions.push({

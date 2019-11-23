@@ -400,7 +400,8 @@ export default class MainDisplay extends React.Component {
                             latitudeDelta: 0.1844,
                             longitudeDelta: 0.0842,
                         }}
-
+                        onPanDrag={()=>this.setMapDragging()}
+                        onRegionChangeComplete={(region) => this.handleRegionChangeComplete(region)}
                         showsUserLocation={true}
                         followsUserLocation={true}
                         //showsMyLocationButton={true}
@@ -427,6 +428,11 @@ export default class MainDisplay extends React.Component {
                             />
                         ))}
                     </MapView>
+
+                    <RedoSearch
+                        handleSearch={()=>this.handleSearch()}
+                        newView={this.state.newView}
+                    />
 
                     <InfoPanel
                         doesExist={this.props.doesExist}

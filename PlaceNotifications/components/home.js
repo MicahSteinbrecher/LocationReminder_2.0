@@ -277,10 +277,14 @@ export default class App extends Component<Props> {
     }
 
     async updateSuggestions(location) {
+
         let suggestions = await getSuggestions(this.state.establishments, location);
+        console.log('home ln 283' + JSON.stringify(suggestions, null, 2))
+
         if (suggestions){
             this.setState({
-                suggestions: suggestions
+                suggestions: suggestions,
+                activePlace: null
             })
         }
     }

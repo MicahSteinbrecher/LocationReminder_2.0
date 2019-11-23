@@ -84,29 +84,37 @@ export async function getSuggestions(establishments, location) {
                     let duration = parseInt(''+hours.structured[j].duration.slice(2,4)+hours.structured[j].duration.slice(5,7))
                     let end = start+duration;
                     let recurrence = hours.structured[j].recurrence;
-                    if (recurrence.includes('MO')){
+                    if (recurrence.includes('SU')){
                         openingHours[0]={
+                            day: 'SU',
+
+                            start: start,
+                            end: end
+                        }
+                    }
+                    if (recurrence.includes('MO')){
+                        openingHours[1]={
                             day: 'MO',
                             start: start,
                             end: end
                         }
                     }
                     if (recurrence.includes('TU')){
-                        openingHours[1]={
+                        openingHours[2]={
                             day: 'TU',
                             start: start,
                             end: end
                         }
                     }
                     if (recurrence.includes('WE')){
-                        openingHours[2]={
+                        openingHours[3]={
                             day: 'WE',
                             start: start,
                             end: end
                         }
                     }
                     if (recurrence.includes('TH')){
-                        openingHours[3]={
+                        openingHours[4]={
                             day: 'TH',
 
                             start: start,
@@ -114,7 +122,7 @@ export async function getSuggestions(establishments, location) {
                         }
                     }
                     if (recurrence.includes('FR')){
-                        openingHours[4]={
+                        openingHours[5]={
                             day: 'FR',
 
                             start: start,
@@ -122,16 +130,8 @@ export async function getSuggestions(establishments, location) {
                         }
                     }
                     if (recurrence.includes('SA')){
-                        openingHours[5]={
-                            day: 'SA',
-
-                            start: start,
-                            end: end
-                        }
-                    }
-                    if (recurrence.includes('SU')){
                         openingHours[6]={
-                            day: 'SU',
+                            day: 'SA',
 
                             start: start,
                             end: end
@@ -148,8 +148,14 @@ export async function getSuggestions(establishments, location) {
                 // }
 
                 if (hours.isOpen) {
+                    console.log('hit is open ln, is open value: ' + hours.isOpen);
                     hours.isOpenTxt = 'Open';
-                    hours.statusChange = "Closes " + formatTime(openingHours[timeStamp.day].end, response[i].title);
+                    try {
+                        hours.statusChange = "Closes " + formatTime(openingHours[timeStamp.day].end, response[i].title);
+                    } catch(e){
+                        console.log('ln 156 ' + e);
+                        debugger;
+                    }
                 }
                 else {
                     hours.isOpenTxt = 'Closed';

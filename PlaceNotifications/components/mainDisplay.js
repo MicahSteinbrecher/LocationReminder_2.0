@@ -442,23 +442,24 @@ export default class MainDisplay extends React.Component {
                         onPressAddPlace={() => this.props.onPressAddPlace()}
                     />
 
-                    <View
-                        style={{
-                            position: 'absolute',//use absolute position to show button on top of the map
-                            top: '70%', //for vertical align
-                            alignSelf: 'flex-end' //for align to right
-                        }}
-                    >
-                        <Icon
-                            reverse
-                            onPress={() => this.setState({
-                                showLegend: !this.state.showLegend
-                            })}
-                            name="info"
-                            type='antdesign'
-                            color='#393e42'
-                        />
-                    </View>
+                    {/*Legend Button*/}
+                    {/*<View*/}
+                        {/*style={{*/}
+                            {/*position: 'absolute',//use absolute position to show button on top of the map*/}
+                            {/*top: '70%', //for vertical align*/}
+                            {/*alignSelf: 'flex-end' //for align to right*/}
+                        {/*}}*/}
+                    {/*>*/}
+                        {/*<Icon*/}
+                            {/*reverse*/}
+                            {/*onPress={() => this.setState({*/}
+                                {/*showLegend: !this.state.showLegend*/}
+                            {/*})}*/}
+                            {/*name="info"*/}
+                            {/*type='antdesign'*/}
+                            {/*color='#393e42'*/}
+                        {/*/>*/}
+                    {/*</View>*/}
                 </View>
             )
         }
@@ -517,24 +518,24 @@ export default class MainDisplay extends React.Component {
                         newView={this.state.newView}
                     />
 
-
-                    <View
-                        style={{
-                            position: 'absolute',//use absolute position to show button on top of the map
-                            top: '70%', //for vertical align
-                            alignSelf: 'flex-end' //for align to right
-                        }}
-                    >
-                        <Icon
-                            reverse
-                            onPress={() => this.setState({
-                                showLegend: !this.state.showLegend
-                            })}
-                            name="info"
-                            type='antdesign'
-                            color='#393e42'
-                        />
-                    </View>
+                    {/*Legend Button*/}
+                    {/*<View*/}
+                        {/*style={{*/}
+                            {/*position: 'absolute',//use absolute position to show button on top of the map*/}
+                            {/*top: '70%', //for vertical align*/}
+                            {/*alignSelf: 'flex-end' //for align to right*/}
+                        {/*}}*/}
+                    {/*>*/}
+                        {/*<Icon*/}
+                            {/*reverse*/}
+                            {/*onPress={() => this.setState({*/}
+                                {/*showLegend: !this.state.showLegend*/}
+                            {/*})}*/}
+                            {/*name="info"*/}
+                            {/*type='antdesign'*/}
+                            {/*color='#393e42'*/}
+                        {/*/>*/}
+                    {/*</View>*/}
                 </View>
             )
     }

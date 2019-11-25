@@ -70,6 +70,9 @@ export async function getSuggestions(establishments, location) {
         console.log('utilities ln 72 get places response: ' + JSON.stringify(response, null, 2));
         for (let i = 0; i < response.length; i++) {
             let hours = response[i].openingHours;
+            if (!hours){
+                console.log('no hours for ' + response[i].title);
+            }
             if (hours){
 
                 let timeStamp = new Date();
@@ -86,7 +89,7 @@ export async function getSuggestions(establishments, location) {
                     let recurrence = hours.structured[j].recurrence;
                     if (recurrence.includes('SU')){
                         openingHours[0]={
-                            day: 'SU',
+                            day: 'Sun',
 
                             start: start,
                             end: end
@@ -94,28 +97,28 @@ export async function getSuggestions(establishments, location) {
                     }
                     if (recurrence.includes('MO')){
                         openingHours[1]={
-                            day: 'MO',
+                            day: 'Mon',
                             start: start,
                             end: end
                         }
                     }
                     if (recurrence.includes('TU')){
                         openingHours[2]={
-                            day: 'TU',
+                            day: 'Tue',
                             start: start,
                             end: end
                         }
                     }
                     if (recurrence.includes('WE')){
                         openingHours[3]={
-                            day: 'WE',
+                            day: 'Wed',
                             start: start,
                             end: end
                         }
                     }
                     if (recurrence.includes('TH')){
                         openingHours[4]={
-                            day: 'TH',
+                            day: 'Thu',
 
                             start: start,
                             end: end
@@ -123,7 +126,7 @@ export async function getSuggestions(establishments, location) {
                     }
                     if (recurrence.includes('FR')){
                         openingHours[5]={
-                            day: 'FR',
+                            day: 'Fri',
 
                             start: start,
                             end: end
@@ -131,7 +134,7 @@ export async function getSuggestions(establishments, location) {
                     }
                     if (recurrence.includes('SA')){
                         openingHours[6]={
-                            day: 'SA',
+                            day: 'Sat',
 
                             start: start,
                             end: end
@@ -150,11 +153,11 @@ export async function getSuggestions(establishments, location) {
                 if (hours.isOpen) {
                     console.log('hit is open ln, is open value: ' + hours.isOpen);
                     hours.isOpenTxt = 'Open';
-                    try {
+                    if (openingHours[timeStamp.day]) {
                         hours.statusChange = "Closes " + formatTime(openingHours[timeStamp.day].end, response[i].title);
-                    } catch(e){
-                        console.log('ln 156 ' + e);
-                        debugger;
+                    } else {
+                        console.log('failure getting hours for '+ response[i].title + ': says open but hours for today  dont exist');
+                        hours = null;
                     }
                 }
                 else {
@@ -165,17 +168,17 @@ export async function getSuggestions(establishments, location) {
                             hours.statusChange = "Opens " + formatTime(openingHours[timeStamp.day].start);
                         } else {
                             let index = 1;
-                            while (!openingHours[(timeStamp.day + index) % 6].start) {
+                            while (!openingHours[(timeStamp.day + index) % 6]) {
                                 index++;
                             }
-                            hours.statusChange = "Opens " + formatTime(openingHours[(timeStamp.day + index)%6].start + ' ' + openingHours[(timeStamp.day + index)%6].day);
+                            hours.statusChange = "Opens " + formatTime(openingHours[(timeStamp.day + index)%6].start) + ' ' + openingHours[(timeStamp.day + index)%6].day;
                         }
                     } else {
                         let index = 1;
-                        while (!openingHours[(timeStamp.day + index) % 6].start) {
+                        while (!openingHours[(timeStamp.day + index) % 6]) {
                             index++;
                         }
-                        hours.statusChange = "Opens " + formatTime(openingHours[(timeStamp.day + index)%6].start + ' ' + openingHours[(timeStamp.day + index)%6].day);
+                        hours.statusChange = "Opens " + formatTime(openingHours[(timeStamp.day + index)%6].start) + ' ' + openingHours[(timeStamp.day + index)%6].day;
                     }
 
                 }

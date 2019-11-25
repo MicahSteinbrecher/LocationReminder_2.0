@@ -1,5 +1,15 @@
 import React from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View, Switch} from 'react-native';
+import {
+    FlatList,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    Switch,
+    TextInput,
+    KeyboardAvoidingView,
+    ScrollView,
+} from 'react-native';
 import {Header} from "react-native-elements";
 import Realm from "realm";
 import {PlaceSchema, EstablishmentSchema} from "../schemas";
@@ -8,7 +18,9 @@ export default class Places extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            establishments: []
+            establishments: [],
+            radius: 5,
+            editRadius: false,
         };
     }
 
@@ -92,6 +104,35 @@ export default class Places extends React.Component {
                     backgroundColor={'#393e42'}
                     centerComponent={ {text: 'Settings', style: { color: '#fff', fontSize: 20 }}}
                 />
+                <View style={{flexDirection:'row', flex: 1}} behavior="padding" enabled>
+                        <Text style={{
+                            fontWeight: 'bold',
+                            padding: 10,
+                            fontSize: 16,
+                            flex: 5}}
+                        >
+                            Radius of search (miles): </Text>
+                        <TextInput style={{
+                            fontWeight: 'bold',
+                            fontSize: 16,
+                            flex: 1,
+                            borderColor: 'black',
+                            borderWidth: 1,
+                            height: 40}}
+                            onChangeText={(radius)=>this.setState({radius: radius})}
+                        >
+                            {this.state.radius}
+                        </TextInput>
+                        {/*<Switch style={{flex: 1}}*/}
+                                {/*value={this.state.editRadius}*/}
+                                {/*onValueChange={(value) => {*/}
+                                    {/*console.log('value ' + value);*/}
+                                    {/*this.setState({*/}
+                                        {/*editRadius: value*/}
+                                    {/*})*/}
+                                {/*}}*/}
+                        {/*/>*/}
+                </View>
                 <View>
                     <Text style={styles.text}> What type of venues would you like data on in your vicinity: </Text>
                 </View>

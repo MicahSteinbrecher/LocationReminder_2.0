@@ -450,7 +450,7 @@ export default class App extends Component<Props> {
             .then(async realm => {
                 let establishments = JSON.parse(JSON.stringify(realm.objects('Establishment')));
                 establishments = Object.values(establishments);
-                let suggestions = await getSuggestions(establishments, this.state.userLocation);
+                let suggestions = await getSuggestions(establishments, this.state.location);
                 //let places = await getPlaces();
                 //places = Object.values(places);
                 //let nearbyPlaces = await getNearbyPlaces(this.state.userLocation, places);

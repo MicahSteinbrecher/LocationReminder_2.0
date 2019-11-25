@@ -19,3 +19,9 @@ export const EstablishmentSchema = {
     }
 }
 
+export const RadiusSchema = {
+    name: 'Radius',
+    properties: {
+        radius: 'float',
+    }
+}

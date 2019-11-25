@@ -14,7 +14,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { SearchBar, ListItem, List, Button } from 'react-native-elements'
 import Realm from 'realm';
 import {NavigationEvents} from "react-navigation";
-import {PlaceSchema, EstablishmentSchema} from "../schemas";
+import {PlaceSchema, EstablishmentSchema, RadiusSchema} from '../schemas';
 import {
     addPlace,
     removePlace,
@@ -104,12 +104,18 @@ export default class App extends Component<Props> {
          * 3) else: get existing ones
          * 4) set component state
          */
-        await Realm.open({schema: [PlaceSchema, EstablishmentSchema]})
+        Realm.open({schema: [PlaceSchema, EstablishmentSchema, RadiusSchema]})
             .then(realm => {
                 let establishments = realm.objects('Establishment').slice();
+                let radius = realm.objects('Radius').slice();
+                if (radius.length!==0){
+                    radius = radius[0].radius
+                } else
+                    radius  = 5
                 if (establishments.length != 0) {
                     this.setState({
-                        establishments: establishments
+                        establishments: establishments,
+                        radius: radius
                     });
                 }
 
@@ -278,7 +284,7 @@ export default class App extends Component<Props> {
 
     async updateSuggestions(location) {
 
-        let suggestions = await getSuggestions(this.state.establishments, location);
+        let suggestions = await getSuggestions(this.state.establishments, location, this.state.radius);
         console.log('home ln 283' + JSON.stringify(suggestions, null, 2))
 
         if (suggestions){
@@ -304,7 +310,7 @@ export default class App extends Component<Props> {
             console.log('user location changed to: ' + JSON.stringify(this.state.userLocation));
 
             //TODO get places based off users preferences
-            let suggestions = await getSuggestions(this.state.establishments, this.state.userLocation);
+            let suggestions = await getSuggestions(this.state.establishments, this.state.userLocation, this.state.radius);
             if (suggestions){
                 this.setState({
                     suggestions: suggestions
@@ -446,11 +452,20 @@ export default class App extends Component<Props> {
          *
          */
 
-        Realm.open({schema: [PlaceSchema, EstablishmentSchema]})
+        Realm.open({schema: [PlaceSchema, EstablishmentSchema, RadiusSchema]})
             .then(async realm => {
+
                 let establishments = JSON.parse(JSON.stringify(realm.objects('Establishment')));
                 establishments = Object.values(establishments);
-                let suggestions = await getSuggestions(establishments, this.state.location);
+
+                let radius = realm.objects('Radius').slice();
+                if (radius.length!==0){
+                    radius = radius[0].radius
+                } else {
+                    radius = 5
+                }
+
+                let suggestions = await getSuggestions(establishments, this.state.location, radius);
                 //let places = await getPlaces();
                 //places = Object.values(places);
                 //let nearbyPlaces = await getNearbyPlaces(this.state.userLocation, places);
@@ -461,12 +476,15 @@ export default class App extends Component<Props> {
                 //console.log('new places: ' + JSON.stringify(places));
                 //console.log('new nearby places ' + JSON.stringify(nearbyPlaces));
 
+
+
                 this.setState({
                     suggestions: suggestions,
                     establishments: establishments,
                     activePlace: null,
                     //places: places,
                     //nearbyPlaces: (nearbyPlaces === undefined) ? [] : nearbyPlaces.result,
+                    radius: radius,
                 });
             })
             .catch(error => {

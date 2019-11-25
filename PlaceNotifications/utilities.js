@@ -36,11 +36,11 @@ export function compareLocations(loc1, loc2){
  * Queries foursquare venues based on section.
  * Helpeer function for GetSuggestions
  */
-async function getPlacesByType(type, location) {
+async function getPlacesByType(type, location, radius) {
     //'https://api.foursquare.com/v2/venues/explore?client_id=MB0WW2OJNKZ3KAMVMGDRAC1KWOIPPIJQMYT0PSZUAMAGDRRV&client_secret=TH5GX4CM5TI2BQV020Q0IH0EK1D2SEEVEZW2BHQNUT1G0X5T&v=20180323&limit=1&ll='+ location.latitude + ',' + location.longitude
     //	'https://places.api.here.com/places/v1/discover/explore?app_id=x8vu33tuh4Lb0amRPB27&app_code=6IGSuBHopMd1cxLfA5Qqs&in='+ location.latitude + ',' + location.longitude + ';r=5000'
     console.log('getting venues of type: ' + type);
-    return fetch('https://places.api.here.com/places/v1/discover/explore?app_id=x8vu33tuh4Lb0amRPB27&app_code=6IGSuBHopMd1cxLfA5Qqsg&in='+ location.latitude + ',' + location.longitude + ';r=5000&cat='+type)
+    return fetch('https://places.api.here.com/places/v1/discover/explore?app_id=x8vu33tuh4Lb0amRPB27&app_code=6IGSuBHopMd1cxLfA5Qqsg&in='+ location.latitude + ',' + location.longitude + ';r='+radius+'&cat='+type)
         .then((response) => response.json())
         .then((responseJson) => {
             return responseJson.results.items;
@@ -51,10 +51,14 @@ async function getPlacesByType(type, location) {
 
 }
 
-export async function getSuggestions(establishments, location) {
+export async function getSuggestions(establishments, location, radius) {
 
     let suggestions = [];
     let categories = [];
+    radius *= 1609.34; //miles to meters ratio
+
+    console.log('radius  of new suggestions search: ' + radius);
+
 
     //gets venues based on users prefered categories
     for (let i = 0; i < establishments.length; i++) {
@@ -66,7 +70,7 @@ export async function getSuggestions(establishments, location) {
 
     console.log('utilities ln 71: ' + JSON.stringify(categories));
     if (categories.length !== 0) {
-        let response = await getPlacesByType(categories.toString(), location);
+        let response = await getPlacesByType(categories.toString(), location, radius);
         console.log('utilities ln 72 get places response: ' + JSON.stringify(response, null, 2));
         for (let i = 0; i < response.length; i++) {
             let hours = response[i].openingHours;

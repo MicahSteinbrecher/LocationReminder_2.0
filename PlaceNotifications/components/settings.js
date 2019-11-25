@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 import {Header} from "react-native-elements";
 import Realm from "realm";
-import {PlaceSchema, EstablishmentSchema} from "../schemas";
+import {PlaceSchema, EstablishmentSchema, RadiusSchema} from "../schemas";
+import Error from "./error"
 
 export default class Places extends React.Component {
     constructor(props){
@@ -21,12 +22,13 @@ export default class Places extends React.Component {
             establishments: [],
             radius: 5,
             editRadius: false,
+            isNaN: false
         };
     }
 
     componentWillMount() {
-        console.log('initializing settings...')
-        Realm.open({schema: [PlaceSchema, EstablishmentSchema]})
+        console.log('initializing settings...');
+        Realm.open({schema: [PlaceSchema, EstablishmentSchema, RadiusSchema]})
             .then(realm => {
                 console.log('opened realm...');
 
@@ -58,8 +60,15 @@ export default class Places extends React.Component {
                     });
                     console.log('done initializing establishments...');
                 }
+                let radius  = realm.objects('Radius').slice(0,1);
+                if (radius.length === 1) {
+                    radius = radius[0].radius;
+                } else {
+                    radius = 5
+                }
                 this.setState({
-                    establishments: realm.objects('Establishment').sorted('type').slice()
+                    establishments: realm.objects('Establishment').sorted('type').slice(),
+                    radius: radius
                 });
 
             })
@@ -76,7 +85,7 @@ export default class Places extends React.Component {
     handleValueChange(value, type) {
         console.log('value change: ' + type + ': ' + value);
         let establishments = this.state.establishments.slice();
-        Realm.open({schema: [PlaceSchema, EstablishmentSchema]})
+        Realm.open({schema: [PlaceSchema, EstablishmentSchema, RadiusSchema]})
             .then(realm => {
                 for (var i = 0; i < establishments.length; i++) {
                     if (establishments[i].type === type) {
@@ -89,6 +98,44 @@ export default class Places extends React.Component {
                 }
                 this.setState({
                     establishments: realm.objects('Establishment').sorted('type').slice()
+                })
+            })
+            .catch(error => {
+                console.log(error);
+                return error;
+            });
+    }
+
+    handleRadiusUpdate(radius) {
+        if (!radius) {
+            this.setState({
+                isNaN: false
+            })
+            return;
+        }
+
+        radius = parseFloat(radius);
+
+        if (isNaN(radius)){
+            this.setState({
+                isNaN: true
+            })
+            return;
+        }
+
+        this.setState({
+            isNaN: false
+        })
+
+        Realm.open({schema: [PlaceSchema, EstablishmentSchema, RadiusSchema]})
+            .then(realm => {
+                realm.write(() => {
+                    realm.delete(realm.objects('Radius'));
+                    realm.create('Radius', {radius: radius});
+                });
+
+                this.setState({
+                    radius: radius
                 })
             })
             .catch(error => {
@@ -119,7 +166,7 @@ export default class Places extends React.Component {
                             borderColor: 'black',
                             borderWidth: 1,
                             height: 40}}
-                            onChangeText={(radius)=>this.setState({radius: radius})}
+                            onChangeText={(radius)=>{this.handleRadiusUpdate(radius)}}
                         >
                             {this.state.radius}
                         </TextInput>
@@ -133,6 +180,7 @@ export default class Places extends React.Component {
                                 {/*}}*/}
                         {/*/>*/}
                 </View>
+                <Error isNaN={this.state.isNaN}/>
                 <View>
                     <Text style={styles.text}> What type of venues would you like data on in your vicinity: </Text>
                 </View>

@@ -4,7 +4,7 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Realm from 'realm';
 import { Header, CheckBox } from 'react-native-elements';
 import { NavigationEvents } from "react-navigation";
-import {EstablishmentSchema, PlaceSchema} from '../schemas';
+import {EstablishmentSchema, PlaceSchema, RadiusSchema} from '../schemas';
 
 
 function ListEditor(props) {
@@ -70,7 +70,7 @@ export default class Places extends React.Component {
 
     componentWillMount() {
         Realm.open({
-            schema: [PlaceSchema, EstablishmentSchema]
+            schema: [PlaceSchema, EstablishmentSchema, RadiusSchema]
         }).then(realm => {
             let places = realm.objects('Place').slice();
             this.setState({
@@ -121,7 +121,7 @@ export default class Places extends React.Component {
 
     handleRemove(){
 
-        Realm.open({schema: [PlaceSchema, EstablishmentSchema]})
+        Realm.open({schema: [PlaceSchema, EstablishmentSchema, RadiusSchema]})
             .then(realm => {
                 for (let i = 0; i < this.state.places.length; i++){
                     console.log('places length: ' + this.state.places.length);
@@ -151,7 +151,7 @@ export default class Places extends React.Component {
     }
 
     handleScreenFocus(){
-        Realm.open({schema: [PlaceSchema, EstablishmentSchema]})
+        Realm.open({schema: [PlaceSchema, EstablishmentSchema, RadiusSchema]})
             .then(realm => {
                 let places = realm.objects('Place');
                 this.setState({

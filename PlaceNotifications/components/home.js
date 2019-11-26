@@ -284,7 +284,7 @@ export default class App extends Component<Props> {
 
     async updateSuggestions(location) {
 
-        let suggestions = await getSuggestions(this.state.establishments, location, this.state.radius);
+        let suggestions = await getSuggestions(this.state.establishments, location, this.state.radius, this.state.userLocation);
         console.log('home ln 283' + JSON.stringify(suggestions, null, 2))
 
         if (suggestions){
@@ -310,7 +310,7 @@ export default class App extends Component<Props> {
             console.log('user location changed to: ' + JSON.stringify(this.state.userLocation));
 
             //TODO get places based off users preferences
-            let suggestions = await getSuggestions(this.state.establishments, this.state.userLocation, this.state.radius);
+            let suggestions = await getSuggestions(this.state.establishments, this.state.userLocation, this.state.radius, this.state.userLocation);
             if (suggestions){
                 this.setState({
                     suggestions: suggestions
@@ -465,7 +465,7 @@ export default class App extends Component<Props> {
                     radius = 5
                 }
 
-                let suggestions = await getSuggestions(establishments, this.state.location, radius);
+                let suggestions = await getSuggestions(establishments, this.state.location, radius, this.state.userLocation);
                 //let places = await getPlaces();
                 //places = Object.values(places);
                 //let nearbyPlaces = await getNearbyPlaces(this.state.userLocation, places);

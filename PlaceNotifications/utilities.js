@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import Realm from "realm";
-import {PlaceSchema, EstablishmentSchema} from "./schemas";
+import {PlaceSchema, EstablishmentSchema, RadiusSchema} from './schemas';
 import geolib from 'geolib'
 
 export function getPlaces() {
-    return Realm.open({schema: [PlaceSchema]})
+    return Realm.open({schema: [PlaceSchema, EstablishmentSchema, RadiusSchema]})
         .then(realm => {
             return (realm.objects('Place').slice());
         })
@@ -51,13 +51,13 @@ async function getPlacesByType(type, location, radius) {
 
 }
 
-export async function getSuggestions(establishments, location, radius) {
+export async function getSuggestions(establishments, location, radius, userLocation) {
 
     let suggestions = [];
     let categories = [];
     radius *= 1609.34; //miles to meters ratio
 
-    console.log('radius  of new suggestions search: ' + radius);
+    console.log('radius  of new suggestions search: ' + radius + ' meters');
 
 
     //gets venues based on users prefered categories
@@ -187,18 +187,26 @@ export async function getSuggestions(establishments, location, radius) {
 
                 }
             }
-                suggestions.push({
-                    id: response[i].id,
-                    name: response[i].title,
-                    latlng: {
-                        latitude: response[i].position[0],
-                        longitude: response[i].position[1]
-                    },
-                    category: response[i].category.id,
-                    address: response[i].vicinity,
-                    isSelected: false,
-                    hours: (hours)  ? hours : null,
-                    distance: (response[i].distance*0.000621371).toFixed(2)
+
+            let distance = geolib.getDistance(
+                userLocation,
+                {
+                    latitude: response[i].position[0],
+                    longitude: response[i].position[1]
+                });
+
+            suggestions.push({
+                id: response[i].id,
+                name: response[i].title,
+                latlng: {
+                    latitude: response[i].position[0],
+                    longitude: response[i].position[1]
+                },
+                category: response[i].category.id,
+                address: response[i].vicinity,
+                isSelected: false,
+                hours: (hours)  ? hours : null,
+                distance: (distance*0.000621371).toFixed(2)
             })
         }
     }
@@ -349,7 +357,7 @@ function isNearby(location, place, distanceLimit) {
 
 export function doesExist(place){
     let id = (place.type==='preference') ? place.place.id : place.place.place_id
-    return Realm.open({schema: [PlaceSchema, EstablishmentSchema]}, id)
+    return Realm.open({schema: [PlaceSchema, EstablishmentSchema, RadiusSchema]}, id)
         .then(realm => {
             //check if place already exists
             let places = realm.objects('Place').slice();
@@ -365,7 +373,7 @@ export function doesExist(place){
 //don't add if place already exists
 //updates places and returns new list
 export function addPlace(place) {
-    return Realm.open({schema: [PlaceSchema, EstablishmentSchema]}, place)
+    return Realm.open({schema: [PlaceSchema, EstablishmentSchema, RadiusSchema]}, place)
         .then(realm => {
             //check if place already exists
             let places = realm.objects('Place').slice();
@@ -427,7 +435,7 @@ function getPlaceLocation(id){
 
 export function removePlace(place) {
     console.log('removing place...')
-    return Realm.open({schema: [PlaceSchema, EstablishmentSchema]}, place)
+    return Realm.open({schema: [PlaceSchema, EstablishmentSchema, RadiusSchema]}, place)
         .then(realm => {
             realm.write(() => {
                 let places = realm.objects('Place').slice();

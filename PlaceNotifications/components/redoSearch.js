@@ -4,12 +4,9 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import {Icon, Button} from 'react-native-elements';
 
 export default function RedoSearch(props) {
-    if (!props.newView) {
+
+    if (props.newView && props.settings) {
         return (
-            <View/>
-        )
-    }
-    return (
         <Button
             containerStyle={{
                 type: 'outline',
@@ -20,6 +17,9 @@ export default function RedoSearch(props) {
             title='Search This Area'
             onPress={()=>props.handleSearch()}
         />
+    )}
+    return (
+        <View/>
     )
 }
 

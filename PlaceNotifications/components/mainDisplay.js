@@ -16,6 +16,7 @@ export default class MainDisplay extends React.Component {
             isDraggingMap: false,
             newView: false,
             region: null,
+            establishments: false
         }
     }
     componentDidUpdate(prevProps){
@@ -432,6 +433,7 @@ export default class MainDisplay extends React.Component {
                     <RedoSearch
                         handleSearch={()=>this.handleSearch()}
                         newView={this.state.newView}
+                        settings={this.props.settings}
                     />
 
                     <InfoPanel
@@ -516,6 +518,7 @@ export default class MainDisplay extends React.Component {
                     <RedoSearch
                         handleSearch={()=>this.handleSearch()}
                         newView={this.state.newView}
+                        settings={this.props.settings}
                     />
 
                     {/*Legend Button*/}

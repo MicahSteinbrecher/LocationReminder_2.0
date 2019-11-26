@@ -68,6 +68,7 @@ export default class App extends Component<Props> {
                 isModalActive: false,
                 isMapReady: false,
                 doesExist: null,
+                settings: false,
             };
     }
 
@@ -113,9 +114,17 @@ export default class App extends Component<Props> {
                 } else
                     radius  = 5
                 if (establishments.length != 0) {
+                    let settings = false;
+                    for (let i = 0; i < establishments.length; i++) {
+                        settings = establishments[i].isPreferred;
+                        if (settings)
+                            break;
+                    }
+
                     this.setState({
                         establishments: establishments,
-                        radius: radius
+                        radius: radius,
+                        settings: settings,
                     });
                 }
 
@@ -476,7 +485,13 @@ export default class App extends Component<Props> {
                 //console.log('new places: ' + JSON.stringify(places));
                 //console.log('new nearby places ' + JSON.stringify(nearbyPlaces));
 
-
+                let settings = false;
+                for (let i = 0; i < establishments.length; i++) {
+                    settings = establishments[i].isPreferred;
+                    if (settings) {
+                        break;
+                    }
+                }
 
                 this.setState({
                     suggestions: suggestions,
@@ -485,6 +500,7 @@ export default class App extends Component<Props> {
                     //places: places,
                     //nearbyPlaces: (nearbyPlaces === undefined) ? [] : nearbyPlaces.result,
                     radius: radius,
+                    settings: settings,
                 });
             })
             .catch(error => {
@@ -514,6 +530,7 @@ export default class App extends Component<Props> {
 
                         <View style={{flex: 7}}>
                             <MainDisplay
+                                settings ={this.state.settings}
                                 updateSuggestions={(location)=>this.updateSuggestions(location)}
                                 suggestions={this.state.suggestions}
                                 searchInput={this.state.searchInput}

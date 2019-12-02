@@ -245,7 +245,7 @@ function formatTime(time, name){
     }
     if (time >= 1000){
         time=time.toString();
-        return time.slice(0,2)+':'+time.slice(2)+' p.m.';
+        return time.slice(0,2)+':'+time.slice(2)+' a.m.';
     }
     time=time.toString();
     return time.slice(0,1)+':'+time.slice(1)+' a.m.';

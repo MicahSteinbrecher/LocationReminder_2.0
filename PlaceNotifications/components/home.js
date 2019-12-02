@@ -291,6 +291,12 @@ export default class App extends Component<Props> {
         });
     }
 
+    updateLocation(location){
+
+        this.setState({
+            location:location
+        })
+    }
     async updateSuggestions(location) {
 
         let suggestions = await getSuggestions(this.state.establishments, location, this.state.radius, this.state.userLocation);
@@ -299,7 +305,7 @@ export default class App extends Component<Props> {
         if (suggestions){
             this.setState({
                 suggestions: suggestions,
-                activePlace: null
+                activePlace: null,
             })
         }
     }
@@ -530,6 +536,7 @@ export default class App extends Component<Props> {
 
                         <View style={{flex: 7}}>
                             <MainDisplay
+                                updateLocation={(location)=>this.updateLocation(location)}
                                 settings ={this.state.settings}
                                 updateSuggestions={(location)=>this.updateSuggestions(location)}
                                 suggestions={this.state.suggestions}

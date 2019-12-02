@@ -75,20 +75,22 @@ export default class MainDisplay extends React.Component {
     }
 
     handleRegionChangeComplete(region){
+        if (!this.state.isDraggingMap) {
+            return;
+        }
+
         if (this.state.isDraggingMap) {
             this.setState({
                 isDraggingMap: false,
             });
         }
 
-        if (!this.state.isDraggingMap) {
-            return;
-        }
-
         this.setState({
             newView: true,
             region: region
         })
+
+        this.props.updateLocation(region);
     }
 
     setMapDragging() {
